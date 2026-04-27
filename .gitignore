@@ -8,3 +8,4 @@ build/
 Thumbs.db
 RunWeeklySlots.bat
 RunWeeklyCageSlots.bat
+firebase-config.js

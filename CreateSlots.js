@@ -1,15 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, addDoc, deleteDoc, query, where, getDocs, doc } from "firebase/firestore";
-// 🔑 Your Firebase config
-const firebaseConfig = {
-  apiKey: "AIzaSyBuRNNw2S8p3NNY2M8QRQgc0D1KSrceJng",
-  authDomain: "cap-practice-booking.firebaseapp.com",
-  projectId: "cap-practice-booking",
-  storageBucket: "cap-practice-booking.firebasestorage.app",
-  messagingSenderId: "49781610428",
-  appId: "1:49781610428:web:917a9d2a42e27c9d7e7db9",
-  measurementId: "G-BB34REQSK8"
-};
+import firebaseConfig from "./firebase-config.js";
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 // ⏱ Slot timings
