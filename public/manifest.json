@@ -1,0 +1,7 @@
+{
+ "short_name": "CAP Booking",
+ "name": "CAP Ground Booking App",
+ "start_url": ".",
+ "display": "standalone",
+ "background_color": "#ffffff"
+}

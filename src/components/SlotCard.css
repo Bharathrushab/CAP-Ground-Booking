@@ -1,0 +1,180 @@
+.slot-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 12px 0;
+  background-color: #ffffff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.weekend-badge {
+  display: inline-block;
+  background-color: #ffc107;
+  color: #333;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.slot-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+}
+
+.slot-card-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-family: 'Arial', sans-serif;
+  color: #333;
+}
+
+.slot-date {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #007bff;
+}
+
+.slot-time {
+  font-size: 1rem;
+  color: #28a745;
+}
+
+.slot-status {
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+.book-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  width: 100%;
+  margin-top: 10px;
+  transition: background-color 0.2s;
+}
+
+.book-button:hover {
+  background-color: #0056b3;
+}
+
+.cancel-button {
+  background-color: transparent;
+  color: #dc3545;
+  border: 1px solid #dc3545;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  margin-left: 10px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.cancel-button:hover {
+  background-color: #dc3545;
+  color: white;
+}
+
+.reserve-button {
+  background-color: #ffc107;
+  color: #333;
+  border: none;
+  padding: 8px 0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  width: 100%;
+  margin-top: 8px;
+  transition: background-color 0.2s;
+}
+
+.reserve-button:hover {
+  background-color: #e0a800;
+}
+
+/* Cage grouped layout */
+.cage-date-group {
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 16px;
+  margin: 12px 0;
+  background-color: #ffffff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.cage-date-header {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cage-time-row {
+  margin-bottom: 10px;
+}
+
+.cage-time-label {
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 6px;
+}
+
+.cage-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.cage-card {
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  padding: 12px;
+  background-color: #fafafa;
+  text-align: center;
+}
+
+.cage-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #333;
+  margin-bottom: 6px;
+}
+
+.cage-available {
+  color: #28a745;
+  font-size: 0.85rem;
+  margin: 4px 0;
+}
+
+.cage-booked-info {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.85rem;
+  margin: 2px 0;
+}
+
+.cage-booked-by {
+  color: #888;
+  font-size: 0.8rem;
+  margin: 0 0 6px 0;
+}
+
+.cage-card .book-button {
+  padding: 6px 0;
+  font-size: 13px;
+}
+
+.cage-card .cancel-button {
+  margin-left: 0;
+  margin-top: 4px;
+}

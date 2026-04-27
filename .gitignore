@@ -1,0 +1,10 @@
+node_modules/
+build/
+.env
+.env.local
+.firebase/
+.firebaserc
+.DS_Store
+Thumbs.db
+RunWeeklySlots.bat
+RunWeeklyCageSlots.bat
