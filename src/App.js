@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { db } from "./firebase";
 import { collection, getDocs, doc, runTransaction } from "firebase/firestore";
 import { getDoc } from "firebase/firestore";
-import { where } from "firebase/firestore";
 import SlotCard from "./components/SlotCard";
 import CageSlotCard from "./components/CageSlotCard";
 import TeamModal from "./components/TeamModal";
@@ -10,7 +9,6 @@ import { getAuth, onAuthStateChanged, signInWithEmailAndPassword } from "firebas
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { setDoc } from "firebase/firestore";
 import "./App.css"; // Importing styles for the enhanced layout
-import { query } from "firebase/firestore"; // Add query import
 // import { sendEmail } from "./emailService";
 
 function App() {
@@ -20,43 +18,40 @@ function App() {
  const [selectedCageSlot, setSelectedCageSlot] = useState(null);
  const [activeTab, setActiveTab] = useState("grounds");
  // TODO: Remove test user before deploying
- const [userRole, setUserRole] = useState("captain");
- const [user, setUser] = useState({ uid: "test-captain", displayName: "Test Captain", email: "testcaptain@test.com" });
-// const [userRole, setUserRole] = useState(null);
-// const [user, setUser] = useState(null);
+//  const [userRole, setUserRole] = useState("captain");
+//  const [user, setUser] = useState({ uid: "test-captain", displayName: "Test Captain", email: "testcaptain@test.com" });
+const [userRole, setUserRole] = useState(null);
+const [user, setUser] = useState(null);
 
- const [email, setEmail] = useState("");
- const [password, setPassword] = useState("");
+//  const [email, setEmail] = useState("");
+//  const [password, setPassword] = useState("");
 
  // TODO: Uncomment auth listener before deploying
  // Fetch user role
-//  useEffect(() => {
-//    const auth = getAuth();
-//    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-//      console.log("Auth state changed. Current user:", currentUser);
-//      if (currentUser) {
-//        console.log("User UID:", currentUser.uid);
-//        const userDoc = await getDoc(doc(db, "users", currentUser.uid));
-//        if (userDoc.exists()) {
-//          const userData = userDoc.data();
-//          console.log("User data from Firestore:", userData);
-//          if (userData.role) {
-//            setUser(currentUser);
-//            setUserRole(userData.role);
-//          } else {
-//            alert("Role not defined for this user. Please contact support.");
-//          }
-//        } else {
-//          console.log("User document does not exist in Firestore.");
-//          setUserRole(null);
-//        }
-//      } else {
-//        console.log("No user is currently signed in.");
-//        setUserRole(null);
-//      }
-//    });
-//    return () => unsubscribe();
-//  }, []);
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) {
+        const docKey = currentUser.displayName + "_" + currentUser.uid;
+        const userDoc = await getDoc(doc(db, "users", docKey));
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          if (userData.role) {
+            setUser(currentUser);
+            setUserRole(userData.role);
+          } else {
+            alert("Role not defined for this user. Please contact support.");
+          }
+        } else {
+          setUserRole(null);
+        }
+      } else {
+        setUser(null);
+        setUserRole(null);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
 
  const handleLogin = async (e) => {
    e.preventDefault();
@@ -95,7 +90,8 @@ function App() {
    try {
      const result = await signInWithPopup(auth, provider);
      const currentUser = result.user;
-     const userDoc = await getDoc(doc(db, "users", currentUser.displayName + "_" + currentUser.uid));
+     const docKey = currentUser.displayName + "_" + currentUser.uid;
+     const userDoc = await getDoc(doc(db, "users", docKey));
      if (userDoc.exists()) {
        const userData = userDoc.data();
        if (userData.role) {
@@ -106,7 +102,7 @@ function App() {
        }
      } else {
        // Create a new user document with default role and additional info
-       await setDoc(doc(db, "users", currentUser.displayName + "_" + currentUser.uid), {
+       await setDoc(doc(db, "users", docKey), {
          role: "user",
          name: currentUser.displayName || "Unknown",
          email: currentUser.email || "Unknown"
@@ -144,7 +140,6 @@ function App() {
      if (a.ground > b.ground) return 1;
      return 0;
    });
-   console.log("Filtered Slots:", data); // Debugging filtered slots
    setSlots(data);
  };
 
@@ -467,7 +462,7 @@ function App() {
 
  if (!user) {
    return (
-     <div className="app-container">
+     <div className="app-container login-page">
        <header className="app-header">
          <img src="/logo.png" alt="CAP Logo" className="app-logo" />
          <div>
@@ -475,9 +470,53 @@ function App() {
            <p>Welcome to the CAP Ground Booking System</p>
          </div>
        </header>
-       <div className="login-section">
-         <h2>Login</h2>
-         <button onClick={handleGoogleLogin}>Login with Google</button>
+
+       {/* Scrolling news ticker */}
+       <div className="news-ticker">
+         <span className="news-ticker-label">📰 NEWS</span>
+         <div className="news-ticker-track">
+           <span>
+             🏆 Super Strikers win the CAP Spring League 2026! &nbsp;•&nbsp;
+             🗓️ CAP Premier League kicks off May 9th — mark your calendars! &nbsp;•&nbsp;
+             🏏 Practice ground bookings are now open for the Premier League season &nbsp;•&nbsp;
+           </span>
+           <span aria-hidden="true">
+             🏆 Super Strikers win the CAP Spring League 2026! &nbsp;•&nbsp;
+             🗓️ CAP Premier League kicks off May 9th — mark your calendars! &nbsp;•&nbsp;
+             🏏 Practice ground bookings are now open for the Premier League season &nbsp;•&nbsp;
+           </span>
+         </div>
+       </div>
+
+       <div className="login-news-layout">
+         {/* Login card */}
+         <div className="login-card">
+           <h2>Login</h2>
+           <p className="login-subtitle">Sign in to book practice slots</p>
+           <button className="google-login-btn" onClick={handleGoogleLogin}>
+             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="google-icon" />
+             Login with Google
+           </button>
+         </div>
+
+         {/* News cards */}
+         <div className="news-section">
+           <h3 className="news-section-title">⚡ Latest News</h3>
+           <div className="news-card news-card-champion">
+             <div className="news-card-body">
+               <span className="news-badge">🏆 Champions</span>
+               <h4>Super Strikers Win CAP Spring League 2026!</h4>
+               <p>Congratulations to Super Strikers on clinching the CAP Spring League title. A fantastic season from all 16 teams!</p>
+             </div>
+           </div>
+           <div className="news-card">
+             <div className="news-card-body">
+               <span className="news-badge news-badge-upcoming">📅 Upcoming</span>
+               <h4>CAP Premier League Starts May 9th</h4>
+               <p>The CAP Premier League 2026 is just around the corner. Book your practice slots now to get your team ready!</p>
+             </div>
+           </div>
+         </div>
        </div>
      </div>
    );
@@ -492,6 +531,24 @@ function App() {
          <p>Manage your ground bookings with ease</p>
        </div>
      </header>
+
+     {/* Scrolling news ticker */}
+     <div className="news-ticker">
+       <span className="news-ticker-label">📰 NEWS</span>
+       <div className="news-ticker-track">
+         <span>
+           🏆 Super Strikers win the CAP Spring League 2026! &nbsp;•&nbsp;
+           🗓️ CAP Premier League kicks off May 9th — mark your calendars! &nbsp;•&nbsp;
+           🏏 Practice ground bookings are now open for the Premier League season &nbsp;•&nbsp;
+         </span>
+         <span aria-hidden="true">
+           🏆 Super Strikers win the CAP Spring League 2026! &nbsp;•&nbsp;
+           🗓️ CAP Premier League kicks off May 9th — mark your calendars! &nbsp;•&nbsp;
+           🏏 Practice ground bookings are now open for the Premier League season &nbsp;•&nbsp;
+         </span>
+       </div>
+     </div>
+
      <div className="tab-bar">
        <button
          className={`tab-button ${activeTab === "grounds" ? "active" : ""}`}

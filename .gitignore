@@ -9,3 +9,4 @@ Thumbs.db
 RunWeeklySlots.bat
 RunWeeklyCageSlots.bat
 firebase-config.js
+src/firebase-config.js
