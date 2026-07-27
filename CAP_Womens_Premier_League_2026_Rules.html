@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CAP Women's Premier League 2026 — Tournament Rules</title>
+<style>
+  @media print {
+    body { margin: 0; padding: 20px 30px; }
+    .page-break { page-break-before: always; break-before: page; }
+    .no-print { display: none !important; }
+    h2 { page-break-after: avoid; break-after: avoid; }
+    h3 { page-break-after: avoid; break-after: avoid; }
+    table, .callout, .callout-red, .callout-blue { page-break-inside: avoid; break-inside: avoid; }
+    ul, ol { page-break-inside: avoid; break-inside: avoid; }
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    color: #1a1a1a;
+    line-height: 1.7;
+    max-width: 850px;
+    margin: 0 auto;
+    padding: 40px 50px;
+    background: #fff;
+    font-size: 0.93rem;
+  }
+  /* Cover / Title */
+  .cover {
+    text-align: center;
+    padding: 60px 0 40px;
+  }
+  .cover img {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    border-radius: 50%;
+    margin-bottom: 20px;
+  }
+  .cover h1 {
+    font-size: 2.2rem;
+    color: #0b2545;
+    margin: 0 0 6px;
+    letter-spacing: 1px;
+  }
+  .cover h2 {
+    font-size: 1.3rem;
+    color: #13508a;
+    font-weight: 500;
+    margin: 0 0 6px;
+  }
+  .cover .subtitle {
+    font-size: 0.95rem;
+    color: #666;
+    margin-top: 4px;
+  }
+  .cover .season-badge {
+    display: inline-block;
+    background: #0b2545;
+    color: #fff;
+    padding: 6px 24px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-top: 16px;
+    letter-spacing: 1px;
+  }
+  /* Table of Contents */
+  .toc {
+    background: #f5f7fa;
+    border: 1px solid #dde3ea;
+    border-radius: 8px;
+    padding: 24px 30px;
+    margin: 30px 0;
+  }
+  .toc h2 {
+    font-size: 1.15rem;
+    color: #0b2545;
+    margin: 0 0 12px;
+    border-bottom: 2px solid #0b2545;
+    padding-bottom: 6px;
+  }
+  .toc ul { list-style: none; padding: 0; margin: 0; }
+  .toc li {
+    padding: 5px 0;
+    font-size: 0.9rem;
+    border-bottom: 1px dotted #ccc;
+  }
+  .toc li:last-child { border: none; }
+  .toc a { color: #13508a; text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+  /* Headings */
+  h2 {
+    font-size: 1.4rem;
+    color: #0b2545;
+    border-bottom: 3px solid #13508a;
+    padding-bottom: 6px;
+    margin-top: 44px;
+    margin-bottom: 16px;
+  }
+  h3 {
+    font-size: 1.08rem;
+    color: #13508a;
+    margin-top: 26px;
+    margin-bottom: 10px;
+  }
+  h4 {
+    font-size: 0.98rem;
+    color: #333;
+    margin-top: 18px;
+    margin-bottom: 6px;
+  }
+  /* Paragraphs */
+  p {
+    font-size: 0.93rem;
+    margin: 8px 0 12px;
+  }
+  /* Lists */
+  ul, ol { padding-left: 22px; margin: 8px 0 14px; }
+  li { margin-bottom: 5px; font-size: 0.93rem; line-height: 1.65; }
+  ol li { margin-bottom: 7px; }
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+    font-size: 0.9rem;
+  }
+  th {
+    background: #0b2545;
+    color: #fff;
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.88rem;
+    letter-spacing: 0.3px;
+  }
+  td {
+    padding: 9px 14px;
+    border-bottom: 1px solid #ddd;
+    vertical-align: top;
+  }
+  tr:nth-child(even) td { background: #f8f9fb; }
+  /* Callouts */
+  .callout {
+    background: #fff3cd;
+    border-left: 4px solid #f0a500;
+    padding: 14px 18px;
+    margin: 16px 0;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    line-height: 1.65;
+  }
+  .callout-red {
+    background: #fde8e8;
+    border-left-color: #dc3545;
+  }
+  .callout-blue {
+    background: #e8f0fe;
+    border-left-color: #13508a;
+  }
+  .bold { font-weight: 700; }
+  .highlight { background: #fffde7; padding: 1px 4px; }
+  hr {
+    border: none;
+    border-top: 1px solid #e0e0e0;
+    margin: 30px 0;
+  }
+  a { color: #13508a; }
+  .footer {
+    text-align: center;
+    font-size: 0.82rem;
+    color: #999;
+    margin-top: 60px;
+    border-top: 2px solid #0b2545;
+    padding-top: 12px;
+  }
+  .print-btn {
+    display: block;
+    margin: 20px auto;
+    padding: 12px 32px;
+    background: #0b2545;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .print-btn:hover { background: #13508a; }
+</style>
+</head>
+<body>
+
+<!-- Print Button -->
+<button class="print-btn no-print" onclick="window.print()">🖨️ Save as PDF / Print</button>
+
+<!-- ═══════════════ COVER ═══════════════ -->
+<div class="cover">
+  <img src="public/logo.png" alt="CAP Logo">
+  <h1>CAP Women's Premier League 2026</h1>
+  <h2>Tournament Rules &amp; Regulations</h2>
+  <p class="subtitle">Cricket Association of Peoria</p>
+  <span class="season-badge">SEASON 2026</span>
+</div>
+
+<!-- ═══════════════ TABLE OF CONTENTS ═══════════════ -->
+<div class="toc">
+  <h2>Table of Contents</h2>
+  <ul>
+    <li><a href="#format">1. Tournament Format &amp; Structure</a></li>
+    <li><a href="#schedule">2. Game Schedule &amp; Timings</a></li>
+    <li><a href="#ground-rules">3. Ground &amp; Playing Area</a></li>
+    <li><a href="#game-rules">4. Game Rules</a></li>
+    <li><a href="#bowling">5. Bowling &amp; Fielding Rules</a></li>
+    <li><a href="#umpiring">6. Umpires &amp; Umpiring Duties</a></li>
+    <li><a href="#delays">7. Delays, Rain &amp; Rescheduling</a></li>
+    <li><a href="#conduct">8. Code of Conduct &amp; Discipline</a></li>
+    <li><a href="#booking">9. Practice Booking</a></li>
+    <li><a href="#prizes">10. Prizes &amp; Awards</a></li>
+  </ul>
+</div>
+
+<!-- ═══════════════ 1. TOURNAMENT FORMAT ═══════════════ -->
+<div class="page-break"></div>
+<h2 id="format">1. Tournament Format &amp; Structure</h2>
+
+<h3>League Stage</h3>
+<ul>
+  <li><span class="bold">3 teams:</span> Powerplay Divas, Panthers, Daring Divas.</li>
+  <li>Double round-robin format — each team plays every other team <span class="bold">twice</span> (4 games per team, 6 total league matches).</li>
+  <li><span class="bold">1 game per week</span> — all games are <span class="bold">10 overs</span> per side.</li>
+  <li>Points: <span class="bold">Win = 2 pts</span>, Loss = 0 pts, Washout = 1 pt each, Tie = 1 pt each.</li>
+</ul>
+
+<h3>Knockout Stage</h3>
+<ul>
+  <li>Top 2 teams qualify for the <span class="bold">Final</span>.</li>
+  <li>If points are tied, Net Run Rate (NRR) determines standings.</li>
+</ul>
+
+<h3>Season Start</h3>
+<ul>
+  <li>The CAP Women's Premier League 2026 begins <span class="bold">June 13, 2026</span>.</li>
+</ul>
+
+<!-- ═══════════════ 2. GAME SCHEDULE ═══════════════ -->
+<div class="page-break"></div>
+<h2 id="schedule">2. Game Schedule &amp; Timings</h2>
+
+<h3>Venue</h3>
+<table>
+  <tr><th>Stage</th><th>Venue</th></tr>
+  <tr><td>All Games</td><td><span class="bold">Mossville</span></td></tr>
+</table>
+
+<h3>Game Time Slots</h3>
+<table>
+  <tr><th>Day</th><th>Time</th><th>Duration</th></tr>
+  <tr><td>Weekends (Sat/Sun)</td><td>TBD by CAP</td><td>~2 hours</td></tr>
+</table>
+
+<h3>Tentative Schedule</h3>
+<table>
+  <tr><th>Week</th><th>Weekend</th><th>Match</th><th>Notes</th></tr>
+  <tr><td>1</td><td>June 13–14</td><td>Game 1</td><td>Season opener</td></tr>
+  <tr><td>2</td><td>June 20–21</td><td>Game 2</td><td></td></tr>
+  <tr><td>3</td><td>June 27–28</td><td>Game 3</td><td></td></tr>
+  <tr><td colspan="4" style="background:#fff3cd; text-align:center; font-weight:700;">July 4th Weekend (Independence Day) — NO GAMES</td></tr>
+  <tr><td>4</td><td>July 11–12</td><td>Game 4</td><td>Reverse fixtures begin</td></tr>
+  <tr><td>5</td><td>July 18–19</td><td>Game 5</td><td></td></tr>
+  <tr><td>6</td><td>July 25–26</td><td>Game 6</td><td>Last league game</td></tr>
+  <tr><td>—</td><td>Aug 1–2</td><td><span class="bold">🏆 FINAL</span></td><td>Top 2 teams</td></tr>
+</table>
+
+<div class="callout">
+  ⚠️ This schedule is <span class="bold">tentative</span>. CAP reserves the right to adjust dates based on weather, ground availability, or other factors. Teams will be notified of any changes in advance.
+</div>
+
+<h3>Minimum Players &amp; Toss</h3>
+<ul>
+  <li>A team must have a minimum of <span class="bold">7 players</span> on the ground to start the game.</li>
+  <li>Toss time is <span class="bold">10 minutes before</span> the scheduled start.</li>
+  <li>If a team does not have 7 players for the toss, they forfeit the toss.</li>
+  <li>No additional players allowed after <span class="bold">20 minutes</span> from game start.</li>
+</ul>
+
+<!-- ═══════════════ 3. GROUND & PLAYING AREA ═══════════════ -->
+<div class="page-break"></div>
+<h2 id="ground-rules">3. Ground &amp; Playing Area</h2>
+
+<div class="callout-blue callout">
+  <span class="bold">🏏 Key Difference from Men's Cricket:</span><br><br>
+  Women's games are played on <span class="bold">3/4 of the pitch</span>. The <span class="bold">30-yard circle serves as the boundary</span>.
+</div>
+
+<h3>Playing Area</h3>
+<ul>
+  <li>The playing area is <span class="bold">3/4 of the full pitch length</span>.</li>
+  <li>The <span class="bold">30-yard circle is the boundary</span> — any ball crossing the 30-yard circle counts as a boundary (4 runs if along the ground, 6 runs if cleared in the air).</li>
+  <li>Standard cricket stumps and markings apply within the reduced playing area.</li>
+</ul>
+
+<h3>Fielding Side</h3>
+<ul>
+  <li><span class="bold">9 players</span> on the ground for the fielding side (not 11).</li>
+  <li>All 9 fielders must remain within the 30-yard circle (boundary) at all times during play.</li>
+</ul>
+
+<!-- ═══════════════ 4. GAME RULES ═══════════════ -->
+<div class="page-break"></div>
+<h2 id="game-rules">4. Game Rules</h2>
+
+<h3>Match Format</h3>
+<table>
+  <tr><th>Overs</th><th>Max Overs per Bowler</th><th>Players on Field</th></tr>
+  <tr><td>10 overs per side</td><td>2 overs</td><td>9 players (fielding side)</td></tr>
+</table>
+
+<h3>General Rules</h3>
+<ul>
+  <li>A new ball shall be used at the start of each innings.</li>
+  <li><span class="bold">No LBW</span> — LBW dismissals are not applicable in the Women's Premier League.</li>
+  <li><span class="bold">Leg-bye runs are allowed</span> as per ICC rules.</li>
+  <li>Batters may use batting gloves.</li>
+  <li><span class="bold">5-minute break</span> between innings.</li>
+</ul>
+
+<div class="callout-blue callout">
+  <span class="bold">Summary of Key Differences from Men's Rules:</span>
+  <ul style="margin-bottom:0;">
+    <li>3/4 pitch — 30-yard circle is the boundary</li>
+    <li>9 players fielding (not 11)</li>
+    <li>10 overs per side</li>
+    <li>No LBW</li>
+    <li>Max 2 overs per bowler</li>
+  </ul>
+</div>
+
+<h3>Wide Ball</h3>
+<ul>
+  <li><span class="bold">Offside:</span> If any part of the ball is inside the wide line, it is <span class="bold">not a wide</span>. The ball must be entirely outside the wide guideline.</li>
+  <li><span class="bold">Leg-side:</span> Any ball passing outside the leg stumps is a wide.</li>
+  <li><span class="bold">Above the head:</span> A ball that bounces and goes above head height is called a <span class="bold">wide</span>.</li>
+</ul>
+
+<h3>No Ball</h3>
+<ul>
+  <li>Full toss above waist height = <span class="bold">no ball</span>.</li>
+  <li><span class="bold">Bouncers:</span> Only <span class="bold">1 bouncer per over</span> is allowed. A bouncer is any delivery that rises above shoulder height. Second bouncer in the same over = <span class="bold">no ball</span>.</li>
+  <li>All foot-fault no balls apply.</li>
+</ul>
+<div class="callout-blue callout">
+  <span class="bold">All no balls result in a free hit</span> for the next delivery.
+</div>
+
+<h3>Other Rules</h3>
+<ul>
+  <li><span class="bold">Run Out / Stumping:</span> The fielder must hit the stumps with the ball. If stumps are already broken, the fielder must uproot a stump while holding the ball.</li>
+  <li><span class="bold">Retired Hurt:</span> A batsman who is genuinely injured may retire hurt and return later (approved by umpire and opposition captain).</li>
+  <li><span class="bold">Retired Out:</span> A batsman who voluntarily retires cannot return to bat.</li>
+  <li><span class="bold">No substitute runners</span> — not allowed under any circumstances.</li>
+</ul>
+
+<h3>Tied Games — Super Over</h3>
+<ol>
+  <li>The team batting second in the main match bats <span class="bold">first</span> in the Super Over.</li>
+  <li>Each side nominates 3 batsmen. Loss of 2 wickets ends the Super Over.</li>
+  <li>If the Super Over is tied, another Super Over is played until a result is achieved.</li>
+</ol>
+
+<!-- ═══════════════ 5. BOWLING & FIELDING ═══════════════ -->
+<div class="page-break"></div>
+<h2 id="bowling">5. Bowling &amp; Fielding Rules</h2>
+
+<h3>Bowling</h3>
+<ul>
+  <li>Maximum <span class="bold">2 overs per bowler</span> (10 overs ÷ minimum 5 bowlers).</li>
+  <li>Chucking rules apply — elbow extension exceeding 15 degrees is illegal.</li>
+</ul>
+
+<h3>Fielding</h3>
+<ul>
+  <li><span class="bold">9 players</span> on the fielding side at all times.</li>
+  <li>All fielders must remain within the 30-yard circle (the boundary).</li>
+  <li>No fielding restrictions (no powerplay overs) — all 9 fielders can be placed anywhere within the boundary.</li>
+</ul>
+
+<!-- ═══════════════ 6. UMPIRING ═══════════════ -->
+<div class="page-break"></div>
+<h2 id="umpiring">6. Umpires &amp; Umpiring Duties</h2>
+
+<h3>Who Umpires?</h3>
+<ul>
+  <li>CAP will assign umpires for Women's Premier League games.</li>
+  <li>The umpire's decision is <span class="bold">final</span>.</li>
+</ul>
+
+<h3>Recording</h3>
+<ul>
+  <li>The batting team must provide a leg umpire who <span class="bold">records the match on phone</span> at all times.</li>
+  <li>If the batting team fails to record, any disputed decision favors the bowling team.</li>
+</ul>
+
+<h3>What Can Be Checked via Recording</h3>
+<table>
+  <tr><th>✅ Allowed Checks</th><th>❌ NOT Allowed</th></tr>
+  <tr><td>Run outs</td><td rowspan="4"><span class="bold">Sound / audio</span> — no decisions based on sound</td></tr>
+  <tr><td>No balls (above waist height)</td></tr>
+  <tr><td>Bouncer height</td></tr>
+  <tr><td>Whether a catch was taken cleanly</td></tr>
+</table>
+
+<!-- ═══════════════ 7. DELAYS & RESCHEDULING ═══════════════ -->
+<div class="page-break"></div>
+<h2 id="delays">7. Delays, Rain &amp; Rescheduling</h2>
+
+<h3>Game Rescheduling</h3>
+<div class="callout-blue callout">
+  <span class="bold">📋 Rescheduling Policy:</span><br><br>
+  Teams can reschedule a game by <span class="bold">reaching out directly to the opposing team's captain</span>. Games can be rescheduled to <span class="bold">any weekday</span> that both teams agree upon.<br><br>
+  ⚠️ Both captains must notify CAP of the rescheduled date.
+</div>
+
+<h3>Weather / Rain Delays</h3>
+<ul>
+  <li>Captains and umpires will decide on playing conditions during rain.</li>
+  <li>If both teams cannot play at least <span class="bold">5 overs each</span>, the game is a washout.</li>
+  <li>Washed-out games can be rescheduled to any weekday agreed upon by both captains.</li>
+  <li>If a rescheduled game is also washed out, it becomes <span class="bold">split points (1 point each)</span>.</li>
+</ul>
+
+<h3>Late Arrival</h3>
+<ul>
+  <li><span class="bold">10 minutes late:</span> Team loses 1 over.</li>
+  <li><span class="bold">Every 5 minutes after:</span> 1 additional over deducted.</li>
+  <li><span class="bold">20 minutes late:</span> Game forfeited if minimum players not present.</li>
+</ul>
+
+<!-- ═══════════════ 8. CODE OF CONDUCT ═══════════════ -->
+<div class="page-break"></div>
+<h2 id="conduct">8. Code of Conduct &amp; Discipline</h2>
+
+<p>CAP expects all participants to demonstrate sportsmanship and respect. This is a competitive yet friendly league.</p>
+
+<table>
+  <tr><th>Level</th><th>Classification</th><th>Description</th><th>Penalty</th></tr>
+  <tr>
+    <td>0</td><td>Warning</td>
+    <td>Minor infractions, first-time violations</td>
+    <td>Verbal warning + documentation</td>
+  </tr>
+  <tr>
+    <td>1</td><td>Minor Misconduct</td>
+    <td>Repeated infractions, persistent arguing</td>
+    <td>1-game suspension</td>
+  </tr>
+  <tr>
+    <td>2</td><td>Serious Misconduct</td>
+    <td>Verbal abuse, unsportsmanlike conduct</td>
+    <td>1-game suspension + 2 point deduction</td>
+  </tr>
+  <tr>
+    <td>3</td><td>Physical Altercation</td>
+    <td>Physical aggression towards anyone</td>
+    <td>Season suspension + possible expulsion</td>
+  </tr>
+</table>
+
+<!-- ═══════════════ 9. PRACTICE BOOKING ═══════════════ -->
+<div class="page-break"></div>
+<h2 id="booking">9. Practice Booking</h2>
+
+<p>Women's teams have dedicated practice slots at <span class="bold">Mossville on Monday and Friday</span> evenings.</p>
+
+<h3>How to Book</h3>
+<ol>
+  <li>Log in at <a href="https://cap-practice-booking.web.app" target="_blank">cap-practice-booking.web.app</a>.</li>
+  <li>Select the <span class="bold">Women's Cricket</span> tab.</li>
+  <li>Browse available Monday/Friday slots and click <span class="bold">Book</span>.</li>
+  <li>Select your team and confirm.</li>
+</ol>
+
+<h3>Practice Rules</h3>
+<table>
+  <tr><th>Rule</th><th>Details</th></tr>
+  <tr><td>Dedicated days</td><td>Monday &amp; Friday at Mossville</td></tr>
+  <tr><td>Max teams per slot</td><td>2 teams can share a practice slot</td></tr>
+  <tr><td>Booking limit</td><td>1 slot per team per week</td></tr>
+  <tr><td>Priority</td><td>Women's teams have priority; men's teams can book only on the day if no women's team has booked</td></tr>
+</table>
+
+<div class="callout">
+  💡 <span class="bold">Weekend Practice:</span> Women's teams not playing a game on the weekend can reach out to CAP to schedule additional practice time at Mossville.
+</div>
+
+<!-- ═══════════════ 10. PRIZES ═══════════════ -->
+<div class="page-break"></div>
+<h2 id="prizes">10. Prizes &amp; Awards</h2>
+<p><em>Prize details will be announced by CAP before the knockout stage.</em></p>
+
+<table>
+  <tr><th>Award</th><th>Prize</th></tr>
+  <tr><td>League Winner</td><td>Trophy</td></tr>
+  <tr><td>Runner-up</td><td>Trophy</td></tr>
+  <tr><td>Best Batsman</td><td>Trophy</td></tr>
+  <tr><td>Best Bowler</td><td>Trophy</td></tr>
+  <tr><td>Player of the Final</td><td>Trophy</td></tr>
+</table>
+
+<hr>
+
+<!-- ═══════════════ FINAL NOTE ═══════════════ -->
+<div class="callout-blue callout" style="text-align:center; font-size:0.95rem;">
+  <span class="bold">Important &amp; Final Note</span><br><br>
+  All teams must abide by the rules and regulations of the park they are playing in.<br><br>
+  CAP reserves the right to amend these rules at any time in the best interests of the league.<br>
+  CAP is not responsible for injuries to players.<br><br>
+  <span class="bold" style="font-size:1rem;">PLAY HARD. PLAY FAIR. RESPECT THE GAME. 🏏</span>
+</div>
+
+<div class="footer">
+  <p>Cricket Association of Peoria &nbsp;|&nbsp; CAP Women's Premier League 2026 &nbsp;|&nbsp; Rules v1.0</p>
+</div>
+
+</body>
+</html>

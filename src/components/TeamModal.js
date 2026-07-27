@@ -1,7 +1,8 @@
 import { useState } from "react";
-export default function TeamModal({ onClose, onConfirm }) {
+export default function TeamModal({ onClose, onConfirm, excludeTeams = [] }) {
  const [team, setTeam] = useState("");
- const teams = ["AYF", "Bradley Bulls", "Challengers", "CMCC", "Fearless XI", "Gladiators", "GodFather's XI", "Hurricanes", "MKCC", "PCC", "Peoria Knights", "Peoria United", "RCP", "Red Devils", "Super Strikers", "SuperKings XI"];
+ const allTeams = ["AYF", "Bradley Bulls", "Challengers", "CMCC", "Velocity Vixens", "Fearless XI", "Rising XI", "GodFather's XI", "Hurricanes", "MKCC", "Panthers", "PCC", "Peoria Gladiators", "Peoria Knights", "Peoria United", "Powerplay Divas", "RCP", "Red Devils", "Super Strikers", "SuperKings XI", "VSC"];
+ const teams = allTeams.filter(t => !excludeTeams.includes(t));
  return (
 <div className="modal">
 <h3>Select Team</h3>

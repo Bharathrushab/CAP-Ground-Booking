@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CAP Premier League 2026 — Tournament Rules</title>
+<style>
+  @media print {
+    body { margin: 0; padding: 20px 30px; }
+    .page-break { page-break-before: always; break-before: page; }
+    .no-print { display: none !important; }
+    h2 { page-break-after: avoid; break-after: avoid; }
+    h3 { page-break-after: avoid; break-after: avoid; }
+    table, .callout, .callout-red, .callout-blue { page-break-inside: avoid; break-inside: avoid; }
+    ul, ol { page-break-inside: avoid; break-inside: avoid; }
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    color: #1a1a1a;
+    line-height: 1.7;
+    max-width: 850px;
+    margin: 0 auto;
+    padding: 40px 50px;
+    background: #fff;
+    font-size: 0.93rem;
+  }
+  /* Cover / Title */
+  .cover {
+    text-align: center;
+    padding: 60px 0 40px;
+  }
+  .cover img {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    border-radius: 50%;
+    margin-bottom: 20px;
+  }
+  .cover h1 {
+    font-size: 2.2rem;
+    color: #0b2545;
+    margin: 0 0 6px;
+    letter-spacing: 1px;
+  }
+  .cover h2 {
+    font-size: 1.3rem;
+    color: #13508a;
+    font-weight: 500;
+    margin: 0 0 6px;
+  }
+  .cover .subtitle {
+    font-size: 0.95rem;
+    color: #666;
+    margin-top: 4px;
+  }
+  .cover .season-badge {
+    display: inline-block;
+    background: #0b2545;
+    color: #fff;
+    padding: 6px 24px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-top: 16px;
+    letter-spacing: 1px;
+  }
+  /* Table of Contents */
+  .toc {
+    background: #f5f7fa;
+    border: 1px solid #dde3ea;
+    border-radius: 8px;
+    padding: 24px 30px;
+    margin: 30px 0;
+  }
+  .toc h2 {
+    font-size: 1.15rem;
+    color: #0b2545;
+    margin: 0 0 12px;
+    border-bottom: 2px solid #0b2545;
+    padding-bottom: 6px;
+  }
+  .toc ul { list-style: none; padding: 0; margin: 0; }
+  .toc li {
+    padding: 5px 0;
+    font-size: 0.9rem;
+    border-bottom: 1px dotted #ccc;
+  }
+  .toc li:last-child { border: none; }
+  .toc a { color: #13508a; text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+  /* Headings */
+  h2 {
+    font-size: 1.4rem;
+    color: #0b2545;
+    border-bottom: 3px solid #13508a;
+    padding-bottom: 6px;
+    margin-top: 44px;
+    margin-bottom: 16px;
+  }
+  h3 {
+    font-size: 1.08rem;
+    color: #13508a;
+    margin-top: 26px;
+    margin-bottom: 10px;
+  }
+  h4 {
+    font-size: 0.98rem;
+    color: #333;
+    margin-top: 18px;
+    margin-bottom: 6px;
+  }
+  /* Paragraphs */
+  p {
+    font-size: 0.93rem;
+    margin: 8px 0 12px;
+  }
+  /* Lists */
+  ul, ol { padding-left: 22px; margin: 8px 0 14px; }
+  li { margin-bottom: 5px; font-size: 0.93rem; line-height: 1.65; }
+  ol li { margin-bottom: 7px; }
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+    font-size: 0.9rem;
+  }
+  th {
+    background: #0b2545;
+    color: #fff;
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.88rem;
+    letter-spacing: 0.3px;
+  }
+  td {
+    padding: 9px 14px;
+    border-bottom: 1px solid #ddd;
+    vertical-align: top;
+  }
+  tr:nth-child(even) td { background: #f8f9fb; }
+  /* Callouts */
+  .callout {
+    background: #fff3cd;
+    border-left: 4px solid #f0a500;
+    padding: 14px 18px;
+    margin: 16px 0;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    line-height: 1.65;
+  }
+  .callout-red {
+    background: #fde8e8;
+    border-left-color: #dc3545;
+  }
+  .callout-blue {
+    background: #e8f0fe;
+    border-left-color: #13508a;
+  }
+  .bold { font-weight: 700; }
+  .highlight { background: #fffde7; padding: 1px 4px; }
+  hr {
+    border: none;
+    border-top: 1px solid #e0e0e0;
+    margin: 30px 0;
+  }
+  a { color: #13508a; }
+  .footer {
+    text-align: center;
+    font-size: 0.82rem;
+    color: #999;
+    margin-top: 60px;
+    border-top: 2px solid #0b2545;
+    padding-top: 12px;
+  }
+  .print-btn {
+    display: block;
+    margin: 20px auto;
+    padding: 12px 32px;
+    background: #0b2545;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .print-btn:hover { background: #13508a; }
+</style>
+</head>
+<body>
+
+<!-- Print Button -->
+<button class="print-btn no-print" onclick="window.print()">🖨️ Save as PDF / Print</button>
+
+<!-- ═══════════════ COVER ═══════════════ -->
+<div class="cover">
+  <img src="public/logo.png" alt="CAP Logo">
+  <h1>CAP Premier League 2026</h1>
+  <h2>Tournament Rules &amp; Regulations</h2>
+  <p class="subtitle">Cricket Association of Peoria</p>
+  <span class="season-badge">SEASON 2026</span>
+</div>
+
+<!-- ═══════════════ TABLE OF CONTENTS ═══════════════ -->
+<div class="toc">
+  <h2>Table of Contents</h2>
+  <ul>
+    <li><a href="#format">1. Tournament Format &amp; Structure</a></li>
+    <li><a href="#schedule">2. Game Schedule &amp; Timings</a></li>
+    <li><a href="#eligibility">3. Player Eligibility &amp; Registration</a></li>
+    <li><a href="#game-rules">4. Game Rules</a></li>
+    <li><a href="#powerplay">5. Power Play</a></li>
+    <li><a href="#umpiring">6. Umpires &amp; Umpiring Duties</a></li>
+    <li><a href="#delays">7. Delays &amp; Rain Management</a></li>
+    <li><a href="#playoffs">8. Play-off &amp; Knockout Rules</a></li>
+    <li><a href="#bat">9. Cricket Bat Specifications</a></li>
+    <li><a href="#bowling">10. Bowling &amp; Fielding Rules</a></li>
+    <li><a href="#conduct">11. Code of Conduct &amp; Discipline</a></li>
+    <li><a href="#ground">12. Ground Logistics</a></li>
+    <li><a href="#booking">13. Practice &amp; Batting Cage Booking</a></li>
+    <li><a href="#prizes">14. Prizes &amp; Awards</a></li>
+  </ul>
+</div>
+
+<!-- ═══════════════ 1. TOURNAMENT FORMAT ═══════════════ -->
+<div class="page-break"></div>
+<h2 id="format">1. Tournament Format &amp; Structure</h2>
+
+<h3>League Stage</h3>
+<ul>
+  <li><span class="bold">18 teams</span> divided into <span class="bold">2 groups of 9</span> (Group A &amp; Group B).</li>
+  <li>Each team plays <span class="bold">8 league matches</span>.</li>
+  <li>All league-stage games are <span class="bold">15 overs</span> per side.</li>
+  <li>Points: <span class="bold">Win = 2 pts</span>, Loss = 0 pts, Washout = 1 pt each, Tie = 1 pt each.</li>
+</ul>
+
+<h3>Division Split</h3>
+<table>
+  <tr><th>Division</th><th>Qualification</th><th>Teams</th><th>Overs</th></tr>
+  <tr><td><span class="bold">Division 1</span></td><td>Top 4 from each group</td><td>8 teams</td><td>20 overs</td></tr>
+  <tr><td><span class="bold">Division 2</span></td><td>Bottom 5 from each group</td><td>10 teams</td><td>15 overs</td></tr>
+</table>
+
+<h3>Division 1 — Cross-Group Format</h3>
+<ul>
+  <li>Teams play <span class="bold">3 cross-group matches</span>.</li>
+  <li>A1 plays B2, B3, B4 &nbsp;|&nbsp; A2 plays B1, B3, B4 &nbsp;|&nbsp; A3 plays B1, B2, B4 &nbsp;|&nbsp; A4 plays B1, B2, B3</li>
+  <li>Division 1 standings are <span class="bold">independent</span> — based on Division 1 games only.</li>
+</ul>
+
+<h3>Division 2 — Cross-Group Format</h3>
+<ul>
+  <li>Teams play <span class="bold">3 opponents from the opposite group</span> (randomly drawn from the 5 teams in the other group).</li>
+  <li>Division 2 standings are <span class="bold">independent</span> — based on Division 2 games only.</li>
+</ul>
+
+<h3>Knockout Stage — Super Groups</h3>
+<ul>
+  <li><span class="bold">Super Group 1 (Division 1):</span> Combined points table across both groups for Division 1 games only. Top 4 qualify.</li>
+  <li><span class="bold">Super Group 2 (Division 2):</span> Combined points table across both groups for Division 2 games only. Top 4 qualify.</li>
+  <li>Teams ranked by points, then NRR (independent of league stage results).</li>
+  <li>Semi-Final 1: 1st vs 4th</li>
+  <li>Semi-Final 2: 2nd vs 3rd</li>
+  <li>Final: Winners of Semi-Finals</li>
+</ul>
+
+<!-- ═══════════════ 2. GAME SCHEDULE ═══════════════ -->
+<div class="page-break"></div>
+<h2 id="schedule">2. Game Schedule &amp; Timings</h2>
+
+<h3>Venue Allocation</h3>
+<table>
+  <tr><th>Stage</th><th>Venue</th></tr>
+  <tr><td>League Stage</td><td><span class="bold">CAP Ground / Mossville</span></td></tr>
+  <tr><td>Division 1</td><td><span class="bold">CAP Ground / Mossville</span></td></tr>
+  <tr><td>Division 2</td><td><span class="bold">CAP Ground / Mossville</span></td></tr>
+  <tr><td>Semi-Finals &amp; Finals</td><td><span class="bold">CAP Ground</span></td></tr>
+</table>
+
+<h3>Game Time Slots</h3>
+<table>
+  <tr><th>Slot</th><th>Time</th><th>Duration</th></tr>
+  <tr><td>Morning</td><td>9:30 AM – 12:30 PM</td><td>3 hours</td></tr>
+  <tr><td>Afternoon</td><td>12:45 PM – 3:45 PM</td><td>3 hours</td></tr>
+  <tr><td>Evening</td><td>4:00 PM – 7:00 PM</td><td>3 hours</td></tr>
+</table>
+
+<div class="callout-blue callout">
+  <span class="bold">⏱️ Innings Time Limit:</span> Each innings must be completed within <span class="bold">75 minutes</span>. Umpires and captains are responsible for maintaining the over rate and ensuring the innings finishes on time.
+</div>
+
+<h3>Minimum Players &amp; Toss</h3>
+<ul>
+  <li>A team must have a minimum of <span class="bold">7 players</span> on the ground to start the game.</li>
+  <li>Toss time is <span class="bold">10 minutes before</span> the scheduled start. Playing XI must be updated in CricClubs before the toss.</li>
+  <li>If a team does not have 7 players for the toss, they forfeit the toss. If both teams don't have enough, the first team to reach 7 wins the toss.</li>
+  <li>No additional players allowed after <span class="bold">30 minutes</span> from game start. No excuses.</li>
+</ul>
+
+<h3>Late Arrival Penalties</h3>
+<div class="callout-red callout">
+  <span class="bold">Example:</span> If the game is scheduled at <span class="bold">10:00 AM</span>, the team must have 7 players on the ground and be ready to start.<br><br>
+  <span class="bold">10:10 AM (10 min late):</span> Team loses <span class="bold">1 over</span>.<br>
+  <span class="bold">Every 5 minutes after that:</span> <span class="bold">1 additional over deducted</span> (10:15 = 2 overs, 10:20 = 3 overs, etc.).<br>
+  <span class="bold">30 minutes late:</span> If team still does not have minimum players, game is <span class="bold">forfeited</span>.<br><br>
+  ⚠️ Umpires <span class="bold">MUST</span> enforce this rule strictly. One delayed game must NOT affect the next scheduled game.
+</div>
+
+<!-- ═══════════════ 3. PLAYER ELIGIBILITY ═══════════════ -->
+<div class="page-break"></div>
+<h2 id="eligibility">3. Player Eligibility &amp; Registration</h2>
+
+<h3>Minimum Games for Playoffs</h3>
+<div class="callout-blue callout">
+  A player must have played a <span class="bold">minimum of 5 games</span> during the league and division stages to be eligible for knockout matches (semi-finals and finals).
+</div>
+
+<h3>Player Identity &amp; Photos</h3>
+<ul>
+  <li>Every player <span class="bold">must</span> have a clear profile picture uploaded in the CricClubs app. The face must be clearly recognizable.</li>
+  <li>If a player not on the roster plays under a different player's name, the team has <span class="bold">1 week</span> to update the roster and correct the scorecard in CricClubs.</li>
+  <li>This is <span class="bold">only allowed once per team</span> for the entire tournament.</li>
+  <li>If it happens a second time, the unregistered player is <span class="bold">not allowed to play</span> and the team must play with <span class="bold">10 players</span> (or fewer if more unregistered players are involved).</li>
+  <li>Umpires are authorized to check player identity using a photo ID during any game, especially during playoffs.</li>
+</ul>
+
+<div class="callout-red callout">
+  ⚠️ <span class="bold">One chance only.</span> First time — update the roster within a week. Second time — the player is out and the team plays short.
+</div>
+
+<h3>Waiver Form</h3>
+<ul>
+  <li>A waiver form is required for all <span class="bold">under-18 players</span>. The waiver must be signed by a parent or guardian <span class="bold">before the start of the game</span>.</li>
+  <li>Under-18 players without a signed waiver are not eligible to play.</li>
+</ul>
+
+<h3>Player Transfers</h3>
+<div class="callout-red callout">
+  <span class="bold">No player transfers are allowed.</span> A player must not have played even a single game for another team.<br><br>
+  If a player wishes to switch teams, they must email CAP at <span class="bold">cappeoria1@gmail.com</span> <span class="bold">before</span> playing any game. Once a player has appeared in any match for a team, they cannot transfer.
+</div>
+
+<h3>Roster Changes</h3>
+<div class="callout-red callout">
+  A player who has <span class="bold">already played a game</span> cannot be removed from the roster to make room for a new player. If the roster is full and the team wants to add someone, they must free a spot by removing a player who has <span class="bold">not yet played</span>.
+</div>
+
+<h3>Registration Fees</h3>
+<ul>
+  <li>Tournament registration fee: <span class="bold">$500 per team</span>.</li>
+  <li>Payment method: <span class="bold">Chase QuickPay / Zelle</span> (preferred) to <span class="bold">cappeoria1@gmail.com</span>.</li>
+  <li>Checks should be made payable to <span class="bold">Cricket Association of Peoria</span>.</li>
+</ul>
+
+<div class="callout-red callout">
+  ⚠️ <span class="bold">Late Payment Penalties:</span><br><br>
+  <span class="bold">Paid after Week 1</span> of games starting: additional <span class="bold">$50 fine</span>.<br>
+  <span class="bold">Paid after Week 2</span> of games starting: additional <span class="bold">$100 fine</span>.<br>
+  <span class="bold">Not paid by Week 2:</span> Team is <span class="bold">excluded from the tournament</span>. No exceptions.
+</div>
+
+<!-- ═══════════════ 4. GAME RULES ═══════════════ -->
+<div class="page-break"></div>
+<h2 id="game-rules">4. Game Rules</h2>
+
+<h3>Match Format</h3>
+<table>
+  <tr><th>Stage</th><th>Overs</th><th>Max Overs per Bowler</th><th>Players</th></tr>
+  <tr><td>League Stage</td><td>15 overs</td><td>3 overs</td><td>11-a-side</td></tr>
+  <tr><td>Division 1</td><td>20 overs</td><td>4 overs</td><td>11-a-side</td></tr>
+  <tr><td>Division 2</td><td>15 overs</td><td>3 overs</td><td>11-a-side</td></tr>
+</table>
+
+<h3>General Rules</h3>
+<ul>
+  <li>A new ball shall be used at the start of each innings.</li>
+  <li>Each team must bring at least <span class="bold">1 new ball</span> to their game.</li>
+  <li><span class="bold">LBW is applicable</span> — standard ICC LBW rules apply.</li>
+  <li><span class="bold">Leg-bye runs are allowed</span> as per ICC rules.</li>
+  <li>Batters may use batting gloves.</li>
+  <li><span class="bold">10-minute break</span> between innings.</li>
+  <li>Optional <span class="bold">5-minute mid-innings break</span> if required, at the fielding side's discretion.</li>
+</ul>
+
+<h3>LBW — ICC Guidelines for Umpires</h3>
+<p>For a batsman to be given out LBW, <span class="bold">all</span> of the following conditions must be met:</p>
+<ol>
+  <li>The ball must <span class="bold">not pitch outside leg stump</span> (if it pitches outside leg, it is not out regardless).</li>
+  <li>The ball must <span class="bold">strike the batsman's pad (or body) in line with the stumps</span>, or — if the batsman is <span class="bold">not offering a shot</span> — the ball may strike outside the line of off stump.</li>
+  <li>The ball must be <span class="bold">going on to hit the stumps</span> in the umpire's judgment (height, direction, and trajectory).</li>
+</ol>
+<p><span class="bold">Key points:</span></p>
+<ul>
+  <li>If the batsman plays a shot and is hit outside the line of off stump → <span class="bold">not out</span>.</li>
+  <li>If the batsman does <span class="bold">not</span> play a shot, impact outside off stump can still be given out if the ball would have hit the stumps.</li>
+  <li>The ball must not be bouncing <span class="bold">too high</span> to hit the stumps — the umpire can review the recording if required to assess the height.</li>
+</ul>
+
+<h3>Wide Ball</h3>
+<ul>
+  <li><span class="bold">Offside:</span> If any part of the ball is inside the wide line, it is <span class="bold">not a wide</span>. The ball must be entirely outside the wide guideline to be called wide.</li>
+  <li><span class="bold">Leg-side:</span> Any ball passing outside the leg stumps is a wide.</li>
+  <li>If a batsman moves across the stumps before the ball is delivered, the wide line moves with the batsman — as per <span class="bold">ICC rules</span>.</li>
+  <li>Not a wide if the striker moves and causes the ball to pass wide, or brings the ball within reach of a normal cricket stroke.</li>
+  <li><span class="bold">Above the head:</span> A ball that bounces and goes above head height is called a <span class="bold">wide</span> (not a no ball).</li>
+</ul>
+
+<h3>No Ball</h3>
+<ul>
+  <li>Ball pitching outside the turf <span class="bold">before the batting-end wickets (striker's end)</span> = <span class="bold">no ball</span>. If the ball pitches outside the turf <span class="bold">after passing the batting-end wickets</span>, it may be called a wide following wide guidelines.</li>
+  <li>Full toss above waist height = <span class="bold">no ball</span>.</li>
+  <li><span class="bold">Bouncers:</span> Only <span class="bold">1 bouncer per over</span> is allowed. A bouncer is any delivery that rises <span class="bold">above shoulder height</span> of the batsman. The first bouncer above shoulder height in an over is a <span class="bold">warning</span>. The second bouncer above shoulder height in the same over is a <span class="bold">no ball</span>.</li>
+  <li>All foot-fault no balls. Field cannot be changed if bowling to the same batsman.</li>
+  <li>If the bowler hits the stump during delivery = <span class="bold">no ball</span> (only if the ball is delivered).</li>
+</ul>
+<div class="callout-blue callout">
+  <span class="bold">All no balls result in a free hit</span> for the next delivery.
+</div>
+
+<h3>Other Rules</h3>
+<ul>
+  <li><span class="bold">Run Out / Stumping — No Bails:</span> Since this format uses stumps without bails, the fielder must <span class="bold">hit the stumps with the ball</span> to effect a run out or stumping. If the stumps have <span class="bold">already been broken</span> (e.g., by a previous throw or by the bowler's delivery), the fielder must <span class="bold">uproot a stump from the ground</span> while holding the ball to complete the dismissal. If all stumps have been uprooted, <span class="bold">one stump must be re-planted</span> into the ground and then uprooted again with the ball in hand to complete the dismissal.</li>
+  <li><span class="bold">Retired Hurt:</span> A batsman who is genuinely injured may retire hurt and can return to bat later when fit. Retired hurt must be <span class="bold">approved by the umpire and the opposition captain</span>.</li>
+  <li><span class="bold">Retired Out:</span> A batsman who voluntarily retires (not injured) is considered retired out and <span class="bold">cannot return</span> to bat.</li>
+  <li><span class="bold">Fielding at Boundary (Catches):</span> If a catch is taken close to the boundary, the fielder <span class="bold">must hold their position</span> for the umpire to inspect. If the fielder moves, the umpire will make the judgment call.</li>
+  <li><span class="bold">Fielding at Boundary (4s/6s):</span> For boundary calls, the fielder's call is trusted — the fielder will throw the ball back and signal accordingly. <span class="bold">Fielders are expected to be honest.</span></li>
+  <li><span class="bold">No substitute runners</span> — substitute runners are not allowed under any circumstances.</li>
+</ul>
+
+<!-- ═══════════════ 5. POWER PLAY ═══════════════ -->
+<div class="page-break"></div>
+<h2 id="powerplay">5. Power Play</h2>
+
+<h3>15-Over Games (League Stage &amp; Division 2)</h3>
+<table>
+  <tr><th>Phase</th><th>Overs</th><th>Max Fielders Outside 30-Yard Circle</th></tr>
+  <tr><td>Powerplay</td><td>1 – 5</td><td>2</td></tr>
+  <tr><td>Remaining Overs</td><td>6 – 15</td><td>5</td></tr>
+</table>
+
+<h3>20-Over Games (Division 1)</h3>
+<table>
+  <tr><th>Phase</th><th>Overs</th><th>Max Fielders Outside 30-Yard Circle</th></tr>
+  <tr><td>Powerplay</td><td>1 – 6</td><td>2</td></tr>
+  <tr><td>Remaining Overs</td><td>7 – 20</td><td>5</td></tr>
+</table>
+
+<p>If overs are reduced, follow the percentage breakdown and round to the nearest whole number.</p>
+
+<!-- ═══════════════ 6. UMPIRING ═══════════════ -->
+<div class="page-break"></div>
+<h2 id="umpiring">6. Umpires &amp; Umpiring Duties</h2>
+
+<h3>6.1 — Who Umpires?</h3>
+<table>
+  <tr><th>Role</th><th>Who</th><th>Responsibility</th></tr>
+  <tr>
+    <td><span class="bold">Main Umpire</span> (bowler's end)</td>
+    <td>Player from the <span class="bold">assigned team</span> (per schedule)</td>
+    <td>Makes all on-field decisions. <span class="bold">Decision is final.</span></td>
+  </tr>
+  <tr>
+    <td><span class="bold">Leg Umpire</span> (leg side)</td>
+    <td>Player from the <span class="bold">batting team</span></td>
+    <td><span class="bold">Records the match on phone at all times.</span> Hands footage to main umpire when requested.</td>
+  </tr>
+</table>
+<ul>
+  <li>The leg umpire's <span class="bold">only role is to record and hand over footage</span>. No player or leg umpire shall discuss, argue, or influence the main umpire's decision.</li>
+  <li>If the batting team's leg umpire <span class="bold">fails to record</span>, any disputed decision will <span class="bold">favor the bowling team</span>.</li>
+</ul>
+
+<h3>6.2 — Umpire Arrival</h3>
+<ul>
+  <li>Arrive approximately <span class="bold">10 minutes before</span> the scheduled start for field checks and toss.</li>
+</ul>
+
+<h3>6.3 — Main Umpire Duties (Before the Game)</h3>
+<ul>
+  <li>Check pitch, ground, and ball conditions.</li>
+  <li>Ensure <span class="bold">Playing XI</span> is published before the toss.</li>
+  <li>Authorized to check player identity via <span class="bold">photo ID</span>, especially during playoffs.</li>
+</ul>
+
+<h3>6.4 — Main Umpire Duties (During the Game)</h3>
+<ul>
+  <li>Ensure games start and finish as per the schedule.</li>
+  <li>Remain <span class="bold">impartial</span> at all times — all decisions are final.</li>
+  <li><span class="bold">Enforce late arrival penalties strictly</span> — one delayed game must not cascade.</li>
+  <li>Track overs when a fielder leaves the field (fielder cannot bat or bowl for that many overs).</li>
+  <li>Keep time of all breaks and notify captains when to resume.</li>
+</ul>
+
+<h3>6.5 — Main Umpire Duties (After the Game)</h3>
+<ul>
+  <li>Select <span class="bold">Man of the Match</span>.</li>
+</ul>
+
+<h3>6.6 — What Can Be Checked via Recording</h3>
+<p>The leg umpire's recording may <span class="bold">only</span> be reviewed for:</p>
+<table>
+  <tr><th>✅ Allowed Checks</th><th>❌ NOT Allowed</th></tr>
+  <tr><td>Run outs</td><td rowspan="6"><span class="bold">Sound / audio</span> (edges, nicks, etc.) — no decisions based on sound</td></tr>
+  <tr><td>No balls (above waist height)</td></tr>
+  <tr><td>Ball pitching — whether it pitched before or after the batsman</td></tr>
+  <tr><td>Bouncer height</td></tr>
+  <tr><td>Height for LBW decisions</td></tr>
+  <tr><td>Whether a catch was taken cleanly</td></tr>
+</table>
+<div class="callout-red callout">
+  <span class="bold">⚠️ Sound is NOT allowed to be checked.</span> No decisions can be made based on audio/sound from the recording (e.g., edges, nicks).
+</div>
+
+<h3>6.7 — Captain Responsibility: Umpire Notification</h3>
+<div class="callout">
+  <span class="bold">📋 Captains must notify CAP of their umpire details:</span><br><br>
+  • <span class="bold">Weekend games:</span> Provide umpire <span class="bold">name and phone number</span> in the group by <span class="bold">Thursday EOD</span>.<br>
+  • <span class="bold">Weekday games:</span> Provide umpire details <span class="bold">2 hours before the match</span>.<br><br>
+  ⚠️ Do NOT simply "like" or "thumbs up" the post. You MUST type out the umpire's <span class="bold">name and phone number</span> as a reply. CAP cannot see thumbs-up reactions as acknowledgment.<br><br>
+  📧 You will also receive automatic email notifications from CricClubs for umpiring assignments. Ensure your email notifications are turned on.
+</div>
+
+<h3>6.8 — No-Show Umpire Fines</h3>
+<div class="callout-red callout">
+  <table style="background:transparent;">
+    <tr><th>Offense</th><th>Penalty</th></tr>
+    <tr><td>First no-show</td><td><span class="bold">$100 fine</span></td></tr>
+    <tr><td>Second no-show onwards</td><td><span class="bold">$100 fine + 2 points deducted</span></td></tr>
+  </table>
+  <br>The penalized team cannot play their next scheduled game until the fine has been paid. Unpaid fines result in game forfeiture.
+</div>
+
+<!-- ═══════════════ 7. DELAYS ═══════════════ -->
+<div class="page-break"></div>
+<h2 id="delays">7. Delays &amp; Rain Management</h2>
+
+<h3>Non-Weather Delays</h3>
+<ul>
+  <li><span class="bold">10 minutes after scheduled start:</span> 1 over deducted from the late team.</li>
+  <li><span class="bold">Every 5 minutes after that:</span> 1 additional over deducted.</li>
+  <li>If one team is intentionally delaying, they may be docked 1 point.</li>
+  <li>If a game exceeds the 3-hour window, the teams can <span class="bold">come back and finish</span> on a rescheduled day.</li>
+  <li>If your team is unable to start on time due to the previous game overrunning, it is the <span class="bold">captain's responsibility</span> to approach the umpire and ensure the ongoing game wraps up. Otherwise your match will have <span class="bold">reduced overs</span>.</li>
+  <li>If delays are cascading, <span class="bold">umpires and captains must be firm</span> in enforcing the time limit to protect subsequent games.</li>
+</ul>
+
+<h3>Game Rescheduling</h3>
+<ul>
+  <li>Teams <span class="bold">cannot</span> reschedule a game to a later date.</li>
+  <li>A game may only be rescheduled if <span class="bold">both teams mutually agree</span> to play on a <span class="bold">prior (earlier) date</span>.</li>
+</ul>
+
+<h3>Weather / Rain Delays</h3>
+<ul>
+  <li>Captains and umpires will decide on playing conditions during rain.</li>
+  <li>If it's already raining, wait for rain to stop, then assess playability.</li>
+  <li>If rain starts after the game begins, evaluate remaining time for a reduced-overs game after rain stops.</li>
+  <li>If both teams <span class="bold">cannot play at least 8 overs each</span>, the game is a <span class="bold">washout</span> and will be <span class="bold">replayed entirely</span> on the rescheduled day.</li>
+  <li>If rain interrupts after <span class="bold">at least half of the second innings</span> has been completed, the game will <span class="bold">continue from where it was left off</span> on the rescheduled day.</li>
+  <li>Washout rescheduling rules below determine when and where the game is replayed/continued.</li>
+  <li>If a rescheduled game is <span class="bold">also washed out</span>, it becomes <span class="bold">split points (1 point each)</span>.</li>
+</ul>
+
+<h3>Washout Rescheduling</h3>
+<div class="callout-blue callout">
+  Washed-out games are rescheduled to the following week based on which ground they were originally scheduled at:<br><br>
+  <span class="bold">CAP Ground washouts:</span><br>
+  • 1st washout → <span class="bold">Monday</span> (following week) at <span class="bold">CAP Ground</span><br>
+  • 2nd washout → <span class="bold">Tuesday</span> at <span class="bold">CAP Ground</span><br>
+  • Additional washouts continue to next available weekday at CAP Ground<br><br>
+  <span class="bold">Mossville washouts:</span><br>
+  • 1st washout → <span class="bold">Monday</span> (following week) at <span class="bold">Mossville</span><br>
+  • 2nd washout → <span class="bold">Tuesday</span> at <span class="bold">Mossville</span><br>
+  • Additional washouts continue to next available weekday at Mossville<br><br>
+  ⚠️ If a rescheduled game is <span class="bold">also washed out</span>, it becomes <span class="bold">split points (1 point each)</span>.
+</div>
+
+<h3>Playoffs — Rain Rules</h3>
+<ul>
+  <li>Division 1 and Division 2 (Super Group) games follow the same washout and rescheduling rules as league games — they <span class="bold">can</span> be washed out and result in split points.</li>
+  <li>All <span class="bold">semi-final and final</span> games <span class="bold">must have a result</span>.</li>
+  <li>If a semi-final or final is not possible within the scheduled window, CAP reserves the right to reschedule the match.</li>
+</ul>
+
+<!-- ═══════════════ 8. PLAYOFFS ═══════════════ -->
+<div class="page-break"></div>
+<h2 id="playoffs">8. Play-off &amp; Knockout Rules</h2>
+
+<h3>Qualification</h3>
+<table>
+  <tr><th>Stage</th><th>Requirement</th></tr>
+  <tr><td>Knockout eligibility</td><td>Minimum <span class="bold">5 games played</span> during league + division stages</td></tr>
+  <tr><td>Super Group 1 (Div 1)</td><td><span class="bold">Combined points table</span> across both groups for Division 1 games only (points, then NRR). Top 4 qualify.</td></tr>
+  <tr><td>Super Group 2 (Div 2)</td><td><span class="bold">Combined points table</span> across both groups for Division 2 games only (points, then NRR). Top 4 qualify.</td></tr>
+</table>
+
+<h3>Semi-Final Format</h3>
+<p>Each Super Group follows the same knockout format:</p>
+<ul>
+  <li>Semi-Final 1: 1st vs 4th</li>
+  <li>Semi-Final 2: 2nd vs 3rd</li>
+  <li>Final: Winners of Semi-Final 1 and Semi-Final 2</li>
+</ul>
+
+<h3>Tied Knockout Games — Super Over (ICC Rules)</h3>
+<ol>
+  <li>The team batting second in the main match bats <span class="bold">first</span> in the Super Over.</li>
+  <li>Each side nominates 3 batsmen. Loss of 2 wickets ends the Super Over.</li>
+  <li>A player <span class="bold">can bat and bowl</span> in the Super Over — as per ICC rules.</li>
+  <li>If the Super Over is tied, <span class="bold">another Super Over is played</span>. This continues until a result is achieved — as per ICC rules.</li>
+</ol>
+
+<!-- ═══════════════ 9. BAT SPECS ═══════════════ -->
+<div class="page-break"></div>
+<h2 id="bat">9. Cricket Bat Specifications</h2>
+
+<div class="callout-red callout">
+  <span class="bold">⚠️ Captains must carry the bat gauge provided by CAP.</span> Any bat that does not pass through the gauge is <span class="bold">not allowed</span> in match play.
+</div>
+
+<ul>
+  <li>Every bat used in a match <span class="bold">must pass through the CAP-provided bat gauge</span>. If it does not fit, the bat is not permitted.</li>
+  <li>Overall length: max <span class="bold">38 inches</span> (including handle).</li>
+  <li>Blade width: max <span class="bold">4.25 inches</span>.</li>
+  <li>Blade depth: max <span class="bold">2.64 inches</span>.</li>
+  <li>Blade edges: max <span class="bold">1.56 inches</span>.</li>
+  <li>If a player uses a non-compliant bat and it is noticed mid-game, the bat must be replaced immediately. The umpire or any player should report it to CAP.</li>
+</ul>
+
+<!-- ═══════════════ 10. BOWLING ═══════════════ -->
+<div class="page-break"></div>
+<h2 id="bowling">10. Bowling &amp; Fielding Rules</h2>
+
+<h3>Over Rate</h3>
+<ul>
+  <li>Captains are responsible for maintaining a healthy over rate to ensure game completion within the scheduled time window.</li>
+</ul>
+
+<h3>Chucking (Illegal Bowling Action)</h3>
+<ul>
+  <li>Defined by ICC: elbow extension exceeding <span class="bold">15 degrees</span>.</li>
+  <li>Batsman may raise concerns with the main umpire.</li>
+  <li>Umpire will observe the bowler's action and may call a <span class="bold">no ball</span> if convinced.</li>
+  <li>If a bowler repeatedly chucks, the opposing team should <span class="bold">record video evidence</span> and submit it to CAP. CAP will review the footage and decide on appropriate action.</li>
+</ul>
+
+<h3>Fielding</h3>
+<ul>
+  <li>Any conspicuous movement or shouting by a fielder during the bowler's delivery stride is prohibited. Umpire may declare the delivery a no ball.</li>
+  <li><span class="bold">Absence Penalty:</span> If a fielder leaves the field of play for any reason during the innings, they are penalized for the same number of overs they were absent:
+    <ul>
+      <li><span class="bold">Bowling:</span> Upon returning to the field, the player must complete the same number of overs fielding before they are permitted to bowl.</li>
+      <li><span class="bold">Batting:</span> If the penalty overs have not been fully served during the fielding innings (e.g., the player returned late and the innings ended before the penalty was complete), the remaining overs carry over — the player cannot come in to bat until that many overs have been completed in the batting innings.</li>
+    </ul>
+    The umpires will track the overs of absence. This rule does not apply if the absence is due to an injury sustained during play and approved by the umpire.
+  </li>
+</ul>
+
+<!-- ═══════════════ 11. CODE OF CONDUCT ═══════════════ -->
+<div class="page-break"></div>
+<h2 id="conduct">11. Code of Conduct &amp; Discipline</h2>
+
+<p>CAP expects all participants to demonstrate sportsmanship and respect. This is a competitive yet friendly league.</p>
+
+<table>
+  <tr><th>Level</th><th>Classification</th><th>Description</th><th>Penalty</th></tr>
+  <tr>
+    <td>0</td><td>Warning</td>
+    <td>Minor infractions, first-time violations, mild dissent</td>
+    <td>Verbal warning + documentation</td>
+  </tr>
+  <tr>
+    <td>1</td><td>Minor Misconduct</td>
+    <td>Repeated minor infractions, persistent arguing with umpires</td>
+    <td>1-game suspension for the player</td>
+  </tr>
+  <tr>
+    <td>2</td><td>Serious Misconduct</td>
+    <td>Verbal abuse, intentional unsportsmanlike conduct, threatening behavior</td>
+    <td>1-game suspension + 2 point deduction</td>
+  </tr>
+  <tr>
+    <td>3</td><td>Physical Altercation</td>
+    <td>Physical fights, aggression towards players/officials/spectators</td>
+    <td>12–36 month suspension + 4 point deduction + possible expulsion</td>
+  </tr>
+  <tr>
+    <td>4</td><td>Gross Misconduct</td>
+    <td>Significant disrepute, property damage, criminal activity</td>
+    <td>Permanent expulsion + season disqualification</td>
+  </tr>
+</table>
+
+<h3>Key Conduct Rules</h3>
+<ul>
+  <li>No physical or verbal attacks against umpires, players, equipment, spectators, or organizers.</li>
+  <li>Umpires can eject players from the game. If the player refuses to leave, the team forfeits the match.</li>
+  <li>Captains are responsible for their team's behavior.</li>
+
+</ul>
+
+<!-- ═══════════════ 12. GROUND LOGISTICS ═══════════════ -->
+<div class="page-break"></div>
+<h2 id="ground">12. Ground Logistics</h2>
+
+<p>CAP grounds have permanent pitches and boundary markings. There is no home or away team policy — all teams share equal responsibility for the facilities.</p>
+
+<h3>Ground Care</h3>
+<ul>
+  <li>Set up wickets before the game. Remove them after the last game of the day.</li>
+  <li>Walk around the ground and surrounding areas after the game to ensure no trash is left behind.</li>
+  <li>Report any damage to the ground or facilities to CAP immediately.</li>
+  <li>All teams must abide by the rules and regulations of the park/township.</li>
+</ul>
+
+<h3>Equipment</h3>
+<p>Each team must carry in their kit bag:</p>
+<ul>
+  <li><span class="bold">Wickets</span> — one set per team (bails are not required)</li>
+  <li><span class="bold">Bat gauge</span> (provided by CAP)</li>
+  <li><span class="bold">New ball</span> (minimum 1 new ball per game)</li>
+</ul>
+
+<h3>Scoring</h3>
+<ul>
+  <li>All scorecard changes must be made on the <span class="bold">same day</span> as the game. After that, the scorecard is locked.</li>
+  <li>Any scorecard changes needed after game day must be <span class="bold">notified to CAP</span> at <a href="mailto:cappeoria1@gmail.com">cappeoria1@gmail.com</a>.</li>
+</ul>
+
+<div class="page-break"></div>
+<h3>Vehicle Safety on CAP Ground</h3>
+<div class="callout-red callout">
+  <span class="bold">⚠️ All drivers entering CAP Ground must follow these rules:</span>
+</div>
+<ul>
+  <li><span class="bold">STOP your vehicle</span> when a ball is being delivered or play is in progress. Do not drive through the ground area during active play.</li>
+  <li>Drive <span class="bold">slowly</span> at all times within the ground premises.</li>
+  <li>Maintain the <span class="bold">speed limit</span> on W Dickison Cemetery Rd — go slow, especially when players and spectators are present.</li>
+  <li>Park at a <span class="bold">safe distance</span> from the playing area.</li>
+  <li>Be aware of players, children, and spectators walking around the ground.</li>
+</ul>
+
+<!-- ═══════════════ 13. PRACTICE & BATTING CAGE BOOKING ═══════════════ -->
+<div class="page-break"></div>
+<h2 id="booking">13. Practice &amp; Batting Cage Booking</h2>
+
+<p>CAP provides practice grounds and batting cages for teams to prepare for matches. All bookings are done through the <span class="bold">CAP Ground Booking System</span> at <a href="https://cap-practice-booking.web.app" target="_blank"><span class="bold">https://cap-practice-booking.web.app</span></a>.</p>
+<p>Only users with the <span class="bold">Captain</span> role can book slots. All other users can view availability but cannot make bookings.</p>
+
+<h3>How to Book</h3>
+<ol>
+  <li>Log in with your Google account at <a href="https://cap-practice-booking.web.app" target="_blank">cap-practice-booking.web.app</a>.</li>
+  <li>Select the <span class="bold">Ground Booking</span> or <span class="bold">Batting Cages</span> tab.</li>
+  <li>Browse available slots and click <span class="bold">Book</span> on your preferred slot.</li>
+  <li>Select your team from the dropdown and confirm.</li>
+</ol>
+
+<h3>Ground Practice Slots</h3>
+<table>
+  <tr><th>Rule</th><th>Details</th></tr>
+  <tr><td>Max teams per slot</td><td><span class="bold">2 teams</span> can share a practice slot</td></tr>
+  <tr><td>Booking limit</td><td><span class="bold">1 slot per team</span> at a time — no team can book two slots</td></tr>
+  <tr><td>Available grounds</td><td>CAP Ground, Mossville</td></tr>
+  <tr><td>Practice days</td><td>Monday – Friday (weekday evenings)</td></tr>
+</table>
+
+<h3>Batting Cage Slots</h3>
+<table>
+  <tr><th>Rule</th><th>Details</th></tr>
+  <tr><td>Max bookings per slot</td><td><span class="bold">1 team</span> per cage per time slot</td></tr>
+  <tr><td>Booking limit (weekday)</td><td>1 cage slot per user and 1 per team for weekday slots</td></tr>
+  <tr><td>Booking limit (weekend)</td><td>1 cage slot per user and 1 per team for weekend slots</td></tr>
+  <tr><td>Available cages</td><td>Cage 1, Cage 2</td></tr>
+</table>
+
+<h3>Cancellation</h3>
+<ul>
+  <li>You can cancel your booking at any time from the booking system.</li>
+  <li>Please cancel as early as possible so other teams can use the slot.</li>
+  <li>Only the person who booked (or a master/admin) can cancel a booking.</li>
+</ul>
+
+<h3>Reserved Slots</h3>
+<ul>
+  <li>CAP administrators may <span class="bold">reserve slots</span> for game days or special events.</li>
+  <li>Reserved slots are blocked from regular booking and marked accordingly.</li>
+</ul>
+
+<div class="callout">
+  💡 <span class="bold">Tip:</span> Book your practice slots early in the week — popular time slots fill up fast!
+</div>
+
+<!-- ═══════════════ 14. PRIZES ═══════════════ -->
+<div class="page-break"></div>
+<h2 id="prizes">14. Prizes &amp; Awards</h2>
+<p><em>Prize details will be announced by CAP before the knockout stage.</em></p>
+
+<table>
+  <tr><th>Award</th><th>Prize</th></tr>
+  <tr><td>Division 1 Winner</td><td>Cash prize (amount TBD) + Cup / Trophy</td></tr>
+  <tr><td>Division 1 Runner-up</td><td>Cup / Trophy (cash TBD)</td></tr>
+  <tr><td>Division 2 Winner</td><td>Cup / Trophy</td></tr>
+  <tr><td>Division 2 Runner-up</td><td>Cup / Trophy</td></tr>
+  <tr><td>Best Batsman — Division 1</td><td>Cup / Trophy</td></tr>
+  <tr><td>Best Batsman — Division 2</td><td>Cup / Trophy</td></tr>
+  <tr><td>Best Bowler — Division 1</td><td>Cup / Trophy</td></tr>
+  <tr><td>Best Bowler — Division 2</td><td>Cup / Trophy</td></tr>
+  <tr><td>MVP — Division 1</td><td>Cup / Trophy</td></tr>
+  <tr><td>MVP — Division 2</td><td>Cup / Trophy</td></tr>
+  <tr><td>Player of the Match — Division 1 Final</td><td>Cup / Trophy</td></tr>
+  <tr><td>Player of the Match — Division 2 Final</td><td>Cup / Trophy</td></tr>
+</table>
+
+<hr>
+
+<!-- ═══════════════ FINAL NOTE ═══════════════ -->
+<div class="callout-blue callout" style="text-align:center; font-size:0.95rem;">
+  <span class="bold">Important &amp; Final Note</span><br><br>
+  All teams must abide by the rules and regulations of the park they are playing in.<br>
+  Drinking or urinating publicly is strictly prohibited.<br><br>
+  CAP reserves the right to amend these rules at any time in the best interests of the league.<br>
+  CAP is not responsible for injuries to players.<br><br>
+  <span class="bold" style="font-size:1rem;">PLAY HARD. PLAY FAIR. RESPECT THE GAME. 🏏</span>
+</div>
+
+<div class="footer">
+  <p>Cricket Association of Peoria &nbsp;|&nbsp; CAP Premier League 2026 &nbsp;|&nbsp; Rules v1.0</p>
+  <p>For questions, contact CAP administration.</p>
+</div>
+
+</body>
+</html>

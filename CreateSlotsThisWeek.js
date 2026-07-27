@@ -7,19 +7,19 @@ const db = getFirestore(app);
 const times = [
  "5:00-7:30PM"
 ];
-// 📅 Generate slots for next week (Mon-Fri)
+// 📅 Generate slots for THIS week (Mon-Fri)
 function generateDates() {
  const dates = [];
  const today = new Date();
  const dayOfWeek = today.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
 
- // Calculate days until next Monday
- const daysUntilNextMonday = dayOfWeek === 0 ? 1 : 8 - dayOfWeek;
+ // Calculate days SINCE this Monday (go backward)
+ const daysSinceMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
 
- // Generate Monday through Friday of next week
+ // Generate Monday through Friday of this week
  for (let i = 0; i < 5; i++) {
    const date = new Date(today);
-   date.setDate(today.getDate() + daysUntilNextMonday + i);
+   date.setDate(today.getDate() - daysSinceMonday + i);
    const year = date.getFullYear();
    const month = String(date.getMonth() + 1).padStart(2, '0');
    const day = String(date.getDate()).padStart(2, '0');
@@ -27,17 +27,20 @@ function generateDates() {
  }
  return dates;
 }
-// Function to delete ALL existing slots
-async function deleteAllSlots() {
-  const snapshot = await getDocs(collection(db, "slots"));
-  for (const docSnap of snapshot.docs) {
-    await deleteDoc(doc(db, "slots", docSnap.id));
-    console.log(`Deleted slot: ${docSnap.id}`);
-  }
+// Function to check if a slot already exists
+async function slotExists(date, time, ground, category) {
+  const existingSlotQuery = query(
+    collection(db, "slots"),
+    where("date", "==", date),
+    where("time", "==", time),
+    where("ground", "==", ground),
+    where("category", "==", category)
+  );
+  const snapshot = await getDocs(existingSlotQuery);
+  return !snapshot.empty;
 }
-// Function to update slots for the next week
-async function updateNextWeekSlots() {
-  await deleteAllSlots(); // Delete ALL existing slots first
+// Function to create slots for this week
+async function createThisWeekSlots() {
   const dates = generateDates();
   for (let i = 0; i < dates.length; i++) {
     const date = dates[i];
@@ -50,6 +53,11 @@ async function updateNextWeekSlots() {
         // Skip Mossville on Mon/Fri for men's — those belong to women's
         if (isMondayOrFriday && ground === "Mossville") continue;
 
+        const exists = await slotExists(date, time, ground, "mens");
+        if (exists) {
+          console.log(`Slot already exists: ${date} ${time} for ${ground} (mens)`);
+          continue;
+        }
         const note = (dayOfWeek === 5 && ground === "CAP Ground")
           ? "⚠️ Note: Practice begins at 5:30 PM due to mowing"
           : "";
@@ -66,6 +74,11 @@ async function updateNextWeekSlots() {
 
       // Create women's Mossville slot on Mon/Fri
       if (isMondayOrFriday) {
+        const exists = await slotExists(date, time, "Mossville", "womens");
+        if (exists) {
+          console.log(`Slot already exists: ${date} ${time} for Mossville (womens)`);
+          continue;
+        }
         await addDoc(collection(db, "slots"), {
           date,
           time,
@@ -78,6 +91,6 @@ async function updateNextWeekSlots() {
       }
     }
   }
-  console.log("✅ Next week's slots updated!");
+  console.log("✅ This week's slots created!");
 }
-updateNextWeekSlots();
+createThisWeekSlots();

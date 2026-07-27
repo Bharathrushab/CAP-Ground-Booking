@@ -4,12 +4,18 @@ import "./SlotCard.css"; // Ensure the CSS file is imported
 function SlotCard({ slot, onBook, onCancel, onReserve, onUnreserve, user, userRole }) {
   // Format the date (parse as local to avoid timezone shift)
   const [y, m, d] = slot.date.split('-');
-  const formattedDate = new Date(y, m - 1, d).toLocaleDateString("en-US", {
+  const slotDate = new Date(y, m - 1, d);
+  const formattedDate = slotDate.toLocaleDateString("en-US", {
     weekday: "long",
     year: "numeric",
     month: "long",
     day: "numeric",
   });
+
+  // Check if slot is today
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const isToday = slotDate.getTime() === today.getTime();
 
   // Ensure booked_by_teams contains only valid entries
   const bookedTeams = (slot.booked_by_teams || []).filter(
@@ -21,10 +27,15 @@ function SlotCard({ slot, onBook, onCancel, onReserve, onUnreserve, user, userRo
   );
 
   return (
-    <div className="slot-card">
-      <p>📅 {formattedDate}</p>
+    <div className={`slot-card${isToday ? ' slot-today' : ''}`}>
+      <p>📅 {formattedDate}{isToday && <span className="slot-today-badge">Today</span>}</p>
       <p>🕐 {slot.time}</p>
       <p>🏟️ {slot.ground}</p>
+      {slot.note && (
+        <p style={{ color: "#e67e22", fontWeight: "bold", fontSize: "0.9em" }}>
+          📝 {slot.note}
+        </p>
+      )}
       {slot.reserved ? (
         <div>
           <p style={{ color: "#dc3545", fontWeight: "bold" }}>Reserved for Game Day</p>

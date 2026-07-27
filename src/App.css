@@ -40,6 +40,54 @@
   margin: 0;
 }
 
+/* ── User info in header ── */
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.user-name {
+  font-size: 0.8rem;
+  color: #333;
+  font-weight: 500;
+}
+
+.role-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.role-captain {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.role-master {
+  background: #fce4ec;
+  color: #c62828;
+}
+
+.role-user {
+  background: #f5f5f5;
+  color: #666;
+}
+
+/* ── Empty state ── */
+.empty-state {
+  text-align: center;
+  color: #888;
+  font-size: 0.92rem;
+  padding: 30px 0;
+  font-style: italic;
+}
+
 .login-section {
   text-align: center;
   margin-top: 20px;
@@ -197,9 +245,9 @@
   background: #1a1a2e;
   color: #fff;
   border-radius: 6px;
-  overflow: hidden;
   margin-bottom: 16px;
   font-size: 0.75rem;
+  position: relative;
 }
 
 .news-ticker-label {
@@ -210,24 +258,26 @@
   white-space: nowrap;
   flex-shrink: 0;
   letter-spacing: 0.5px;
+  z-index: 2;
 }
 
 .news-ticker-track {
-  display: flex;
-  overflow: hidden;
-  white-space: nowrap;
   flex: 1;
+  overflow: hidden;
+  position: relative;
 }
 
 .news-ticker-track span {
   display: inline-block;
-  padding: 6px 0;
-  animation: ticker-scroll 22s linear infinite;
+  padding: 6px 16px 6px 0;
+  font-size: 0.72rem;
+  white-space: nowrap;
+  animation: ticker-scroll 18s linear infinite;
 }
 
 @keyframes ticker-scroll {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  0%   { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
 }
 
 /* ── News section ── */
@@ -306,4 +356,217 @@
     flex: none;
     width: 100%;
   }
+  .app-header {
+    flex-wrap: wrap;
+    gap: 8px;
+    text-align: center;
+    justify-content: center;
+  }
+  .app-header h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+  .app-header p {
+    display: none;
+  }
+  .app-logo {
+    width: 36px;
+    height: 36px;
+  }
+  .user-info {
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    justify-content: center;
+    gap: 8px;
+    border-top: 1px solid #e0e0e0;
+    padding-top: 8px;
+  }
+  .tab-bar {
+    flex-direction: column;
+    gap: 4px;
+    border-bottom: none;
+  }
+  .tab-button {
+    border-bottom: none;
+    border-left: 3px solid transparent;
+    text-align: left;
+    padding: 10px 12px;
+    font-size: 0.95rem;
+    background: #f5f5f5;
+    border-radius: 6px;
+  }
+  .tab-button.active {
+    border-left-color: #007bff;
+    border-bottom-color: transparent;
+    background: #e8f0fe;
+  }
+}
+
+/* ── Loading spinner ── */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 0;
+  color: #666;
+}
+
+.loading-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid #e0e0e0;
+  border-top-color: #007bff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 12px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Toast notifications ── */
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 340px;
+}
+
+.toast {
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  animation: toast-in 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toast-success {
+  background: #28a745;
+}
+
+.toast-error {
+  background: #dc3545;
+}
+
+.toast-info {
+  background: #007bff;
+}
+
+@keyframes toast-in {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* ── My Booking summary card ── */
+.my-booking-card {
+  background: linear-gradient(135deg, #e8f5e9 0%, #f1f8f4 100%);
+  border: 1px solid #c8e6c9;
+  border-left: 4px solid #28a745;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+}
+
+.my-booking-card h4 {
+  margin: 0 0 6px 0;
+  font-size: 0.85rem;
+  color: #2e7d32;
+  font-weight: 600;
+}
+
+.my-booking-card p {
+  margin: 2px 0;
+  font-size: 0.82rem;
+  color: #333;
+}
+
+/* ── Logout button ── */
+.logout-btn {
+  background: transparent;
+  border: 1px solid #dc3545;
+  color: #dc3545;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  margin-left: auto;
+}
+
+.logout-btn:hover {
+  background: #dc3545;
+  color: #fff;
+}
+
+/* ── Confirm dialog overlay ── */
+.confirm-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.confirm-dialog {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 340px;
+  width: 90%;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  text-align: center;
+}
+
+.confirm-dialog p {
+  margin: 0 0 16px 0;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.confirm-dialog-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.confirm-dialog-buttons button {
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  border: none;
+}
+
+.confirm-yes {
+  background: #dc3545;
+  color: #fff;
+}
+
+.confirm-yes:hover {
+  background: #c82333;
+}
+
+.confirm-no {
+  background: #e0e0e0;
+  color: #333;
+}
+
+.confirm-no:hover {
+  background: #ccc;
 }

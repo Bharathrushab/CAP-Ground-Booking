@@ -9,16 +9,17 @@ const cages = ["Cage 1", "Cage 2"];
 const weekdayTimes = ["5:00-6:30 PM", "6:30-8:00 PM"];
 const weekendTimes = ["10:00 AM-12:00 PM", "12:00-2:00 PM", "2:00-4:00 PM", "4:00-6:00 PM", "6:00-8:00 PM"];
 
+// 📅 Generate slots for THIS week (Mon-Sun starting today)
 function generateDates() {
   const dates = [];
   const today = new Date();
   const dayOfWeek = today.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
-  const daysUntilNextMonday = dayOfWeek === 0 ? 1 : 8 - dayOfWeek;
+  const daysUntilMonday = dayOfWeek === 0 ? 1 : (dayOfWeek === 1 ? 0 : 8 - dayOfWeek);
 
-  // Generate next week Mon-Sun (7 days)
+  // Generate this week Mon-Sun (7 days)
   for (let i = 0; i < 7; i++) {
     const date = new Date(today);
-    date.setDate(today.getDate() + daysUntilNextMonday + i);
+    date.setDate(today.getDate() + daysUntilMonday + i);
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
@@ -29,24 +30,6 @@ function generateDates() {
     });
   }
   return dates;
-}
-
-async function deleteOldCageSlots() {
-  const today = new Date();
-  const lastWeekDate = new Date();
-  lastWeekDate.setDate(today.getDate() - 7);
-  const formattedDate = lastWeekDate.toISOString().split("T")[0];
-
-  const oldSlotsQuery = query(
-    collection(db, "cage_slots"),
-    where("date", "<", formattedDate)
-  );
-
-  const snapshot = await getDocs(oldSlotsQuery);
-  for (const docSnap of snapshot.docs) {
-    await deleteDoc(doc(db, "cage_slots", docSnap.id));
-    console.log(`Deleted old cage slot: ${docSnap.id}`);
-  }
 }
 
 async function cageSlotExists(date, time, cage) {
@@ -60,16 +43,7 @@ async function cageSlotExists(date, time, cage) {
   return !snapshot.empty;
 }
 
-async function deleteAllCageSlots() {
-  const snapshot = await getDocs(collection(db, "cage_slots"));
-  for (const docSnap of snapshot.docs) {
-    await deleteDoc(doc(db, "cage_slots", docSnap.id));
-    console.log(`Deleted cage slot: ${docSnap.id}`);
-  }
-}
-
-async function createCageSlots() {
-  await deleteAllCageSlots();
+async function createThisWeekCageSlots() {
   const dates = generateDates();
 
   for (const { dateStr, dayOfWeek } of dates) {
@@ -88,13 +62,13 @@ async function createCageSlots() {
           time,
           cage,
           is_weekend: isWeekend,
-          booked_by: null, // { team, uid, name } or null
+          booked_by: null,
         });
         console.log(`Created cage slot: ${dateStr} ${time} for ${cage}`);
       }
     }
   }
-  console.log("✅ Cage slots created!");
+  console.log("✅ This week's cage slots created!");
 }
 
-createCageSlots();
+createThisWeekCageSlots();
