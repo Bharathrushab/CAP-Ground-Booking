@@ -10,3 +10,5 @@ RunWeeklySlots.bat
 RunWeeklyCageSlots.bat
 firebase-config.js
 src/firebase-config.js
+firebase-debug.log
+*.log
