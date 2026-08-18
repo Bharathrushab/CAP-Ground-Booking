@@ -28,13 +28,12 @@ function generateDates() {
  return dates;
 }
 // Function to check if a slot already exists
-async function slotExists(date, time, ground, category) {
+async function slotExists(date, time, ground) {
   const existingSlotQuery = query(
     collection(db, "slots"),
     where("date", "==", date),
     where("time", "==", time),
-    where("ground", "==", ground),
-    where("category", "==", category)
+    where("ground", "==", ground)
   );
   const snapshot = await getDocs(existingSlotQuery);
   return !snapshot.empty;
@@ -46,16 +45,12 @@ async function createThisWeekSlots() {
     const date = dates[i];
     const [y, m, d] = date.split('-');
     const dayOfWeek = new Date(y, m - 1, d).getDay(); // 1=Mon, 5=Fri
-    const isMondayOrFriday = (dayOfWeek === 1 || dayOfWeek === 5);
 
     for (const time of times) {
       for (const ground of ["CAP Ground", "Mossville"]) {
-        // Skip Mossville on Mon/Fri for men's — those belong to women's
-        if (isMondayOrFriday && ground === "Mossville") continue;
-
-        const exists = await slotExists(date, time, ground, "mens");
+        const exists = await slotExists(date, time, ground);
         if (exists) {
-          console.log(`Slot already exists: ${date} ${time} for ${ground} (mens)`);
+          console.log(`Slot already exists: ${date} ${time} for ${ground}`);
           continue;
         }
         const note = (dayOfWeek === 5 && ground === "CAP Ground")
@@ -67,27 +62,8 @@ async function createThisWeekSlots() {
           ground,
           booked_by_teams: [],
           note,
-          category: "mens",
         });
-        console.log(`Created mens slot: ${date} ${time} for ${ground}`);
-      }
-
-      // Create women's Mossville slot on Mon/Fri
-      if (isMondayOrFriday) {
-        const exists = await slotExists(date, time, "Mossville", "womens");
-        if (exists) {
-          console.log(`Slot already exists: ${date} ${time} for Mossville (womens)`);
-          continue;
-        }
-        await addDoc(collection(db, "slots"), {
-          date,
-          time,
-          ground: "Mossville",
-          booked_by_teams: [],
-          note: "",
-          category: "womens",
-        });
-        console.log(`Created womens slot: ${date} ${time} for Mossville`);
+        console.log(`Created slot: ${date} ${time} for ${ground}`);
       }
     }
   }

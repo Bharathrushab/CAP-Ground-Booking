@@ -43,13 +43,9 @@ async function updateNextWeekSlots() {
     const date = dates[i];
     const [y, m, d] = date.split('-');
     const dayOfWeek = new Date(y, m - 1, d).getDay(); // 1=Mon, 5=Fri
-    const isMondayOrFriday = (dayOfWeek === 1 || dayOfWeek === 5);
 
     for (const time of times) {
       for (const ground of ["CAP Ground", "Mossville"]) {
-        // Skip Mossville on Mon/Fri for men's — those belong to women's
-        if (isMondayOrFriday && ground === "Mossville") continue;
-
         const note = (dayOfWeek === 5 && ground === "CAP Ground")
           ? "⚠️ Note: Practice begins at 5:30 PM due to mowing"
           : "";
@@ -59,22 +55,8 @@ async function updateNextWeekSlots() {
           ground,
           booked_by_teams: [],
           note,
-          category: "mens",
         });
-        console.log(`Created mens slot: ${date} ${time} for ${ground}`);
-      }
-
-      // Create women's Mossville slot on Mon/Fri
-      if (isMondayOrFriday) {
-        await addDoc(collection(db, "slots"), {
-          date,
-          time,
-          ground: "Mossville",
-          booked_by_teams: [],
-          note: "",
-          category: "womens",
-        });
-        console.log(`Created womens slot: ${date} ${time} for Mossville`);
+        console.log(`Created slot: ${date} ${time} for ${ground}`);
       }
     }
   }

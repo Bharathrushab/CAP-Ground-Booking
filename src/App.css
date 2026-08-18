@@ -491,6 +491,30 @@
   color: #333;
 }
 
+/* ── Informational notice card ── */
+.notice-card {
+  background: linear-gradient(135deg, #eef4fd 0%, #f7fafe 100%);
+  border: 1px solid #cfe0f7;
+  border-left: 4px solid #2a7ae2;
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-top: 8px;
+}
+
+.notice-card h4 {
+  margin: 0 0 8px 0;
+  font-size: 0.95rem;
+  color: #1a5cb0;
+  font-weight: 600;
+}
+
+.notice-card p {
+  margin: 6px 0;
+  font-size: 0.88rem;
+  color: #444;
+  line-height: 1.5;
+}
+
 /* ── Logout button ── */
 .logout-btn {
   background: transparent;
@@ -569,4 +593,167 @@
 
 .confirm-no:hover {
   background: #ccc;
+}
+
+/* ── Team picker modal ── */
+.team-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.team-modal {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  max-height: 80vh;
+}
+
+.team-modal-title {
+  margin: 0 0 12px 0;
+  font-size: 1.05rem;
+  color: #222;
+}
+
+.team-search {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.team-search:focus {
+  border-color: #2a7ae2;
+  box-shadow: 0 0 0 3px rgba(42, 122, 226, 0.15);
+}
+
+.team-list {
+  margin-top: 12px;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 120px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 6px;
+}
+
+.team-group-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #888;
+  font-weight: 700;
+  padding: 8px 8px 4px 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.team-group-hint {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #1a5cb0;
+  background: #eaf1fc;
+  border-radius: 10px;
+  padding: 2px 8px;
+}
+
+.team-modal .team-option {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin: 0;
+  padding: 8px 10px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  font-size: 0.92rem;
+  color: #333;
+  cursor: pointer;
+}
+
+.team-modal .team-option:hover {
+  background: #f1f5fb;
+}
+
+.team-modal .team-option.active {
+  background: #eef4fd;
+}
+
+.team-modal .team-option.selected {
+  background: #2a7ae2;
+  color: #fff;
+  font-weight: 600;
+}
+
+.team-empty {
+  padding: 16px 10px;
+  color: #888;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.team-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.team-selected-label {
+  font-size: 0.82rem;
+  color: #666;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.team-modal-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.team-modal .team-confirm,
+.team-modal .team-cancel {
+  margin: 0;
+  padding: 8px 18px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.team-modal .team-confirm {
+  background: #2a7ae2;
+  color: #fff;
+}
+
+.team-modal .team-confirm:disabled {
+  background: #c8d6e8;
+  cursor: not-allowed;
+}
+
+.team-modal .team-cancel {
+  background: #e0e0e0;
+  color: #333;
 }

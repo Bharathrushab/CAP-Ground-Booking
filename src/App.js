@@ -13,10 +13,8 @@ import "./App.css"; // Importing styles for the enhanced layout
 
 function App() {
  const [slots, setSlots] = useState([]);
- const [womensSlots, setWomensSlots] = useState([]);
  const [cageSlots, setCageSlots] = useState([]);
  const [selectedSlot, setSelectedSlot] = useState(null);
- const [selectedWomensSlot, setSelectedWomensSlot] = useState(null);
  const [selectedCageSlot, setSelectedCageSlot] = useState(null);
  const [activeTab, setActiveTab] = useState("grounds");
  const [loading, setLoading] = useState(true);
@@ -135,8 +133,6 @@ const [user, setUser] = useState(null);
    }
  };
 
- const WOMENS_TEAMS = ["Powerplay Divas", "Panthers", "Velocity Vixens"];
-
  const fetchSlots = async () => {
    const snapshot = await getDocs(collection(db, "slots"));
    const allSlots = snapshot.docs
@@ -153,12 +149,8 @@ const [user, setUser] = useState(null);
        return slotDate >= today;
      });
 
-   // Split by category
-   const mensData = allSlots.filter((slot) => slot.category !== "womens");
-   const womensData = allSlots.filter((slot) => slot.category === "womens");
-
    // Sort slots by date, then by ground (CAP Ground first, then Mossville)
-   mensData.sort((a, b) => {
+   allSlots.sort((a, b) => {
      const dateCompare = new Date(a.date) - new Date(b.date);
      if (dateCompare !== 0) return dateCompare;
      if (a.ground < b.ground) return -1;
@@ -166,10 +158,7 @@ const [user, setUser] = useState(null);
      return 0;
    });
 
-   womensData.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-   setSlots(mensData);
-   setWomensSlots(womensData);
+   setSlots(allSlots);
  };
 
  const fetchCageSlots = async () => {
@@ -245,7 +234,6 @@ const [user, setUser] = useState(null);
          const allSlotsSnapshot = await getDocs(collection(db, "slots"));
          for (const slot of allSlotsSnapshot.docs) {
            const sd = slot.data();
-           if (sd.category === "womens") continue;
            const bt = sd.booked_by_teams || [];
            if (bt.some((entry) => entry.uid === user.uid)) {
              throw new Error("You have already booked a slot for a team. You cannot book another slot.");
@@ -364,10 +352,6 @@ const [user, setUser] = useState(null);
      showToast("Only captains and masters can book cage slots.", "error");
      return;
    }
-   if (selectedCageSlot && selectedCageSlot.cage === "Cage 2") {
-     showToast("Cage 2 is still being prepared and cannot be booked yet.", "error");
-     return;
-   }
    if (!user || !user.uid) {
      showToast("User is not authenticated. Please log in again.", "error");
      return;
@@ -385,19 +369,23 @@ const [user, setUser] = useState(null);
          throw new Error("This cage slot is already booked.");
        }
 
-       // Duplicate checks inside transaction (masters bypass)
+       // Duplicate checks inside transaction (masters bypass). Max 2 per weekend/weekday type.
        if (userRole !== "master") {
          const allCageSnapshot = await getDocs(collection(db, "cage_slots"));
+         let userCount = 0;
+         let teamCount = 0;
          for (const s of allCageSnapshot.docs) {
            const d = s.data();
            if (!d.booked_by) continue;
            if (d.is_weekend !== isWeekendSlot) continue;
-           if (d.booked_by.uid === user.uid) {
-             throw new Error(`You have already booked a ${isWeekendSlot ? "weekend" : "weekday"} cage slot.`);
-           }
-           if (d.booked_by.team === team) {
-             throw new Error(`Team ${team} has already booked a ${isWeekendSlot ? "weekend" : "weekday"} cage slot.`);
-           }
+           if (d.booked_by.uid === user.uid) userCount++;
+           if (d.booked_by.team === team) teamCount++;
+         }
+         if (userCount >= 2) {
+           throw new Error(`You have already booked 2 ${isWeekendSlot ? "weekend" : "weekday"} cage slots (max 2).`);
+         }
+         if (teamCount >= 2) {
+           throw new Error(`${team} has already booked 2 ${isWeekendSlot ? "weekend" : "weekday"} cage slots (max 2).`);
          }
        }
 
@@ -454,167 +442,6 @@ const [user, setUser] = useState(null);
    }
  };
 
- // ======== WOMEN'S CRICKET HANDLERS ========
-
- const handleWomensBooking = async (team) => {
-   if (userRole !== "captain" && userRole !== "master") {
-     showToast("Only captains and masters can book slots.", "error");
-     return;
-   }
-
-   if (!user || !user.uid) {
-     showToast("User is not authenticated. Please log in again.", "error");
-     return;
-   }
-
-   const isWomensTeam = WOMENS_TEAMS.includes(team);
-
-   // Men's teams can only book on the day of the slot
-   if (!isWomensTeam && userRole !== "master") {
-     const today = new Date();
-     const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-     if (selectedWomensSlot.date !== todayStr) {
-       showToast("Men's teams can only book women's slots on the day of practice (not in advance).", "error");
-       return;
-     }
-   }
-
-   const ref = doc(db, "slots", selectedWomensSlot.id);
-   try {
-     await runTransaction(db, async (transaction) => {
-       const snap = await transaction.get(ref);
-       const slotData = snap.data();
-
-       if (slotData.reserved) {
-         throw new Error("This slot is reserved for a game. Booking is not allowed.");
-       }
-
-       const bookedTeams = Array.isArray(slotData.booked_by_teams) ? slotData.booked_by_teams : [];
-
-       if (bookedTeams.length >= 2) {
-         throw new Error("This slot is already fully booked.");
-       }
-
-       // Duplicate checks inside transaction (masters bypass)
-       if (userRole !== "master") {
-         const allSlotsSnapshot = await getDocs(collection(db, "slots"));
-         for (const slot of allSlotsSnapshot.docs) {
-           const sd = slot.data();
-           if (sd.category !== "womens") continue;
-           const bt = sd.booked_by_teams || [];
-           if (bt.some((entry) => entry.uid === user.uid)) {
-             throw new Error("You have already booked a women's slot. You cannot book another.");
-           }
-         }
-       }
-
-       // If a women's team already booked, block men's teams
-       if (!isWomensTeam && userRole !== "master") {
-         const hasWomensTeam = bookedTeams.some((entry) => WOMENS_TEAMS.includes(entry.team));
-         if (hasWomensTeam) {
-           throw new Error("A women's team has already booked this slot. Men's teams cannot book.");
-         }
-       }
-
-       transaction.update(ref, {
-         booked_by_teams: [
-           ...bookedTeams,
-           {
-             team,
-             uid: user.uid,
-             name: user.displayName || "Unknown",
-           },
-         ],
-       });
-     });
-     showToast("Booked!");
-     setSelectedWomensSlot(null);
-     fetchSlots();
-   } catch (e) {
-     showToast(e.message, "error");
-   }
- };
-
- const handleWomensCancelBooking = async (slotId, team) => {
-   if (!user || !user.uid) {
-     showToast("User is not authenticated. Please log in again.", "error");
-     return;
-   }
-
-   const confirmed = await showConfirm(`Cancel booking for ${team}?`);
-   if (!confirmed) return;
-
-   const ref = doc(db, "slots", slotId);
-   try {
-     await runTransaction(db, async (transaction) => {
-       const snap = await transaction.get(ref);
-       const slotData = snap.data();
-
-       const updatedTeams = userRole === "master"
-         ? slotData.booked_by_teams.filter((entry) => entry.team !== team)
-         : slotData.booked_by_teams.filter(
-             (entry) => entry.team !== team || entry.uid !== user.uid
-           );
-
-       transaction.update(ref, {
-         booked_by_teams: updatedTeams,
-       });
-     });
-     showToast("Booking canceled.");
-     fetchSlots();
-   } catch (e) {
-     showToast(e.message, "error");
-   }
- };
-
- const handleWomensReserveSlot = async (slotId) => {
-   if (userRole !== "master") {
-     showToast("Only masters can reserve slots.", "error");
-     return;
-   }
-
-   const ref = doc(db, "slots", slotId);
-   try {
-     await runTransaction(db, async (transaction) => {
-       const snap = await transaction.get(ref);
-       const slotData = snap.data();
-
-       transaction.update(ref, {
-         reserved: true,
-         reserved_by: user.displayName || "Master",
-         booked_by_teams: slotData.booked_by_teams || [],
-       });
-     });
-     showToast("Slot reserved for game day.");
-     fetchSlots();
-   } catch (e) {
-     showToast(e.message, "error");
-   }
- };
-
- const handleWomensUnreserveSlot = async (slotId) => {
-   if (userRole !== "master") {
-     showToast("Only masters can unreserve slots.", "error");
-     return;
-   }
-
-   const ref = doc(db, "slots", slotId);
-   try {
-     await runTransaction(db, async (transaction) => {
-       transaction.update(ref, {
-         reserved: false,
-         reserved_by: null,
-       });
-     });
-     showToast("Slot unreserved.");
-     fetchSlots();
-   } catch (e) {
-     showToast(e.message, "error");
-   }
- };
-
-
-
  if (!user) {
    return (
      <div className="app-container login-page">
@@ -631,8 +458,8 @@ const [user, setUser] = useState(null);
          <span className="news-ticker-label">📰 NEWS</span>
          <div className="news-ticker-track">
            <span>
-             🏆 Super Strikers win the CAP Spring League 2026! &nbsp;•&nbsp;
-             🏏 CAP Women's League starts June 13th — book your practice slots! &nbsp;•&nbsp;
+             🏆 Powerplay Divas win the CAP Women's League 2026! &nbsp;•&nbsp;
+             🏏 CAP T20 Fall Tournament starts Aug 29 — book your practice slots! &nbsp;•&nbsp;
              🏏 Practice ground bookings are now open for the season &nbsp;•&nbsp;
            </span>
          </div>
@@ -655,15 +482,15 @@ const [user, setUser] = useState(null);
            <div className="news-card news-card-champion">
              <div className="news-card-body">
                <span className="news-badge">🏆 Champions</span>
-               <h4>Super Strikers Win CAP Spring League 2026!</h4>
-               <p>Congratulations to Super Strikers on clinching the CAP Spring League title. A fantastic season from all 16 teams!</p>
+               <h4>Powerplay Divas Win the CAP Women's League 2026!</h4>
+               <p>Congratulations to Powerplay Divas on clinching the CAP Women's League title. A fantastic season from all the teams!</p>
              </div>
            </div>
            <div className="news-card">
              <div className="news-card-body">
                <span className="news-badge news-badge-upcoming">📅 Upcoming</span>
-               <h4>CAP Women's League Starts June 13th</h4>
-               <p>The CAP Women's League 2026 kicks off June 13th. Women's teams — book your practice slots now!</p>
+               <h4>CAP T20 Fall Tournament Starts Aug 29</h4>
+               <p>The CAP T20 Fall Tournament 2026 kicks off August 29th. Captains — book your practice slots now!</p>
              </div>
            </div>
          </div>
@@ -718,8 +545,8 @@ const [user, setUser] = useState(null);
        <span className="news-ticker-label">📰 NEWS</span>
        <div className="news-ticker-track">
          <span>
-           🏆 Super Strikers win the CAP Spring League 2026! &nbsp;•&nbsp;
-           🏏 CAP Women's League starts June 13th — book your practice slots! &nbsp;•&nbsp;
+           🏆 Powerplay Divas win the CAP Women's League 2026! &nbsp;•&nbsp;
+           🏏 CAP T20 Fall Tournament starts Aug 29 — book your practice slots! &nbsp;•&nbsp;
            🏏 Practice ground bookings are now open for the season &nbsp;•&nbsp;
          </span>
        </div>
@@ -787,61 +614,25 @@ const [user, setUser] = useState(null);
          <TeamModal
            onConfirm={handleBooking}
            onClose={() => setSelectedSlot(null)}
-           excludeTeams={WOMENS_TEAMS}
          />
        )}
      </div>
      )}
      {activeTab === "womens" && (
      <div className="booking-section">
-       <h2>Women's Cricket — Mossville (Mon & Fri)</h2>
-       <p style={{ fontSize: "0.9em", color: "#555" }}>
-         Priority: Women's teams (Powerplay Divas, Panthers, Velocity Vixens). Men's teams can book only on the day if no women's team has booked.
-       </p>
-       <p style={{ fontSize: "0.9em", color: "#2a7ae2", fontStyle: "italic" }}>
-         ℹ️ Women's teams not playing a game this weekend can reach out to CAP to schedule practice time at Mossville on the weekend.
-       </p>
-       {/* My Booking summary */}
-       {user && (() => {
-         const mySlot = womensSlots.find(s => (s.booked_by_teams || []).some(e => e.uid === user.uid));
-         if (!mySlot) return null;
-         const myEntry = mySlot.booked_by_teams.find(e => e.uid === user.uid);
-         const [y, m, d] = mySlot.date.split('-');
-         const dateStr = new Date(y, m - 1, d).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
-         return (
-           <div className="my-booking-card">
-             <h4>Your Booking</h4>
-             <p>🏏 {myEntry.team} — {dateStr}, {mySlot.time} @ {mySlot.ground}</p>
-           </div>
-         );
-       })()}
-       {loading ? (
-         <div className="loading-container">
-           <div className="loading-spinner"></div>
-           <p>Loading slots...</p>
-         </div>
-       ) : womensSlots.length === 0 ? (
-         <p className="empty-state">No women's slots available this week. Check back soon!</p>
-       ) : (
-         womensSlots.map(slot => (
-           <SlotCard
-             key={slot.id}
-             slot={slot}
-             onBook={() => setSelectedWomensSlot(slot)}
-             onCancel={handleWomensCancelBooking}
-             onReserve={handleWomensReserveSlot}
-             onUnreserve={handleWomensUnreserveSlot}
-             user={user}
-             userRole={userRole}
-           />
-         ))
-       )}
-       {selectedWomensSlot && (userRole === "captain" || userRole === "master") && (
-         <TeamModal
-           onConfirm={handleWomensBooking}
-           onClose={() => setSelectedWomensSlot(null)}
-         />
-       )}
+       <h2>Women's Cricket</h2>
+       <div className="notice-card">
+         <h4>🏏 No practice slots scheduled right now</h4>
+         <p>
+           The CAP Women's League has wrapped up, and no tournaments are confirmed
+           for the near future — so women's practice slots aren't being scheduled yet.
+         </p>
+         <p>
+           Slots will reopen on this tab as soon as the next women's tournament is
+           announced. In the meantime, women's teams can reach out to CAP directly to
+           arrange practice time.
+         </p>
+       </div>
      </div>
      )}
      {activeTab === "cages" && (
@@ -916,7 +707,7 @@ const [user, setUser] = useState(null);
          <TeamModal
            onConfirm={handleCageBooking}
            onClose={() => setSelectedCageSlot(null)}
-           excludeTeams={WOMENS_TEAMS}
+           extraTeams={["Youth Practice Under 18"]}
          />
        )}
        </div>
