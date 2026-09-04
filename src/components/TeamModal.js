@@ -22,6 +22,10 @@ const TEAM_GROUPS = [
     label: "Women's Teams",
     teams: ["Panthers", "Powerplay Divas", "Velocity Vixens"],
   },
+  {
+    label: "Other Teams",
+    teams: ["Amigos"],
+  },
 ];
 
 export default function TeamModal({ onClose, onConfirm, excludeTeams = [], extraTeams = [] }) {
