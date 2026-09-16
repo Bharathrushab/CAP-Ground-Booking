@@ -1,10 +1,11 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { db } from "./firebase";
-import { collection, getDocs, doc, runTransaction, writeBatch } from "firebase/firestore";
+import { collection, getDocs, doc, runTransaction, writeBatch, deleteDoc } from "firebase/firestore";
 import { getDoc } from "firebase/firestore";
 import SlotCard from "./components/SlotCard";
 import CageSlotCard from "./components/CageSlotCard";
 import TeamModal from "./components/TeamModal";
+import { TEAM_GROUPS, DEFAULT_TEAMS, teamDocId, groupTeams } from "./teams";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { setDoc } from "firebase/firestore";
@@ -28,6 +29,10 @@ const [user, setUser] = useState(null);
 const [showRoleManager, setShowRoleManager] = useState(false);
 const [manageableUsers, setManageableUsers] = useState([]);
 const [roleManagerLoading, setRoleManagerLoading] = useState(false);
+const [teams, setTeams] = useState([]);
+const [showTeamManager, setShowTeamManager] = useState(false);
+const [newTeamName, setNewTeamName] = useState("");
+const [newTeamGroup, setNewTeamGroup] = useState(TEAM_GROUPS[0].label);
 
 
 
@@ -179,6 +184,64 @@ const [roleManagerLoading, setRoleManagerLoading] = useState(false);
    }
  };
 
+ const fetchTeams = async () => {
+   const snapshot = await getDocs(collection(db, "booking_teams"));
+   setTeams(
+     snapshot.empty
+       ? DEFAULT_TEAMS
+       : snapshot.docs.map((teamDoc) => ({ id: teamDoc.id, ...teamDoc.data() }))
+   );
+ };
+
+ const groupedTeams = useMemo(() => groupTeams(teams), [teams]);
+
+ // The team list starts as code defaults; the first master edit persists them to Firestore.
+ const seedTeamsIfEmpty = async () => {
+   const snapshot = await getDocs(collection(db, "booking_teams"));
+   if (!snapshot.empty) return;
+   const batch = writeBatch(db);
+   DEFAULT_TEAMS.forEach((team) => {
+     batch.set(doc(db, "booking_teams", teamDocId(team.name)), { name: team.name, group: team.group });
+   });
+   await batch.commit();
+ };
+
+ const handleAddTeam = async () => {
+   const name = newTeamName.trim();
+   if (!name) {
+     showToast("Enter a team name.", "error");
+     return;
+   }
+   if (teams.some((team) => team.name.toLowerCase() === name.toLowerCase())) {
+     showToast(`${name} already exists.`, "error");
+     return;
+   }
+   try {
+     await seedTeamsIfEmpty();
+     const batch = writeBatch(db);
+     batch.set(doc(db, "booking_teams", teamDocId(name)), { name, group: newTeamGroup });
+     await batch.commit();
+     setNewTeamName("");
+     await fetchTeams();
+     showToast(`${name} added.`);
+   } catch (error) {
+     showToast(error.message, "error");
+   }
+ };
+
+ const handleRemoveTeam = async (team) => {
+   const confirmed = await showConfirm(`Remove ${team.name} from the team list?`);
+   if (!confirmed) return;
+   try {
+     await seedTeamsIfEmpty();
+     await deleteDoc(doc(db, "booking_teams", team.id || teamDocId(team.name)));
+     await fetchTeams();
+     showToast(`${team.name} removed.`);
+   } catch (error) {
+     showToast(error.message, "error");
+   }
+ };
+
  const fetchSlots = async () => {
    const snapshot = await getDocs(collection(db, "slots"));
    const allSlots = snapshot.docs
@@ -239,7 +302,7 @@ const [roleManagerLoading, setRoleManagerLoading] = useState(false);
  useEffect(() => {
    const loadData = async () => {
      setLoading(true);
-     await Promise.all([fetchSlots(), fetchCageSlots()]);
+     await Promise.all([fetchSlots(), fetchCageSlots(), fetchTeams()]);
      setLoading(false);
    };
    loadData();
@@ -613,6 +676,56 @@ const [roleManagerLoading, setRoleManagerLoading] = useState(false);
        </div>
      )}
 
+     {/* Manage teams modal (master only) */}
+     {showTeamManager && (
+       <div className="role-modal-overlay" onClick={() => setShowTeamManager(false)}>
+         <div className="role-modal" onClick={(e) => e.stopPropagation()}>
+           <h3 className="role-modal-title">Manage Teams</h3>
+           <div className="team-add-row">
+             <input
+               className="team-add-input"
+               type="text"
+               placeholder="New team name"
+               value={newTeamName}
+               onChange={(e) => setNewTeamName(e.target.value)}
+               onKeyDown={(e) => e.key === "Enter" && handleAddTeam()}
+             />
+             <select
+               className="team-add-select"
+               value={newTeamGroup}
+               onChange={(e) => setNewTeamGroup(e.target.value)}
+             >
+               {TEAM_GROUPS.map((group) => (
+                 <option key={group.label} value={group.label}>{group.label}</option>
+               ))}
+             </select>
+             <button className="team-add-btn" onClick={handleAddTeam}>Add</button>
+           </div>
+           <div className="role-list">
+             {groupedTeams.map((group) => (
+               <div key={group.label} className="team-manage-group">
+                 <div className="team-group-label">{group.label}</div>
+                 {group.teams.map((name) => (
+                   <div key={name} className="team-manage-row">
+                     <span className="team-manage-name">{name}</span>
+                     <button
+                       className="team-remove-btn"
+                       onClick={() => handleRemoveTeam(teams.find((t) => t.name === name))}
+                     >
+                       Remove
+                     </button>
+                   </div>
+                 ))}
+               </div>
+             ))}
+           </div>
+           <div className="role-modal-footer">
+             <button className="role-modal-close" onClick={() => setShowTeamManager(false)}>Close</button>
+           </div>
+         </div>
+       </div>
+     )}
+
      <header className="app-header">
        <img src={`${process.env.PUBLIC_URL}/logo.png`} alt="CAP Logo" className="app-logo" />
        <div>
@@ -624,6 +737,9 @@ const [roleManagerLoading, setRoleManagerLoading] = useState(false);
          <span className={`role-badge role-${userRole}`}>{userRole}</span>
          {userRole === "master" && (
            <button className="manage-roles-btn" onClick={openRoleManager}>Manage Roles</button>
+         )}
+         {userRole === "master" && (
+           <button className="manage-roles-btn" onClick={() => setShowTeamManager(true)}>Manage Teams</button>
          )}
          <button className="logout-btn" onClick={handleLogout}>Logout</button>
        </div>
@@ -697,6 +813,7 @@ const [roleManagerLoading, setRoleManagerLoading] = useState(false);
          <TeamModal
            onConfirm={handleBooking}
            onClose={() => setSelectedSlot(null)}
+           teamGroups={groupedTeams}
          />
        )}
      </div>
@@ -774,6 +891,7 @@ const [roleManagerLoading, setRoleManagerLoading] = useState(false);
            onConfirm={handleCageBooking}
            onClose={() => setSelectedCageSlot(null)}
            extraTeams={["Youth Practice Under 18"]}
+           teamGroups={groupedTeams}
          />
        )}
        </div>

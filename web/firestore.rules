@@ -56,6 +56,15 @@ service cloud.firestore {
         && request.resource.data.role in ['user', 'captain', 'master'];
       allow delete: if false;
     }
+    match /booking_teams/{id} {
+      allow read: if true;
+      allow create, update: if bookingMaster()
+        && request.resource.data.keys().hasOnly(['name', 'group'])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0 && request.resource.data.name.size() <= 100
+        && request.resource.data.group in ['T20 Fall League 2026', 'CAP Club Teams', "Women's Teams", 'Other Teams'];
+      allow delete: if bookingMaster();
+    }
     match /slots/{id} {
       allow read: if true;
       allow create, delete: if bookingMaster();

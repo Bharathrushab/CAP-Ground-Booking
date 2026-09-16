@@ -1,34 +1,6 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 
-const TEAM_GROUPS = [
-  {
-    label: "T20 Fall League 2026",
-    hint: "Fall League only",
-    teams: [
-      "Badgers", "Jaguars", "Monarchs", "Raiders", "Raptors",
-      "Sharks", "Stallions", "Titans", "Vikings", "Wolves",
-    ],
-  },
-  {
-    label: "CAP Club Teams",
-    teams: [
-      "AYF", "Bradley Bulls", "CMCC", "Challengers", "Fearless XI",
-      "GodFather's XI", "Hurricanes", "MKCC", "PCC", "Peoria Gladiators",
-      "Peoria Knights", "Peoria United", "RCP", "Red Devils", "Rising XI",
-      "Super Strikers", "SuperKings XI", "VSC",
-    ],
-  },
-  {
-    label: "Women's Teams",
-    teams: ["Panthers", "Powerplay Divas", "Queens", "Royals", "Velocity Vixens", "Warriors"],
-  },
-  {
-    label: "Other Teams",
-    teams: ["Amigos"],
-  },
-];
-
-export default function TeamModal({ onClose, onConfirm, excludeTeams = [], extraTeams = [] }) {
+export default function TeamModal({ onClose, onConfirm, excludeTeams = [], extraTeams = [], teamGroups = [] }) {
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState("");
   const [activeIndex, setActiveIndex] = useState(0);
@@ -42,8 +14,8 @@ export default function TeamModal({ onClose, onConfirm, excludeTeams = [], extra
     const excluded = excludeKey ? excludeKey.split("|") : [];
     const extras = extraKey ? extraKey.split("|") : [];
     const allGroups = extras.length
-      ? [...TEAM_GROUPS, { label: "Other", teams: extras }]
-      : TEAM_GROUPS;
+      ? [...teamGroups, { label: "Other", teams: extras }]
+      : teamGroups;
     return allGroups.map((g) => ({
       label: g.label,
       hint: g.hint,
@@ -51,7 +23,7 @@ export default function TeamModal({ onClose, onConfirm, excludeTeams = [], extra
         (t) => !excluded.includes(t) && t.toLowerCase().includes(q)
       ),
     })).filter((g) => g.teams.length > 0);
-  }, [query, excludeKey, extraKey]);
+  }, [query, excludeKey, extraKey, teamGroups]);
 
   const flatTeams = useMemo(() => groups.flatMap((g) => g.teams), [groups]);
 

@@ -45,6 +45,17 @@ test('masters can grant or revoke booking roles for others, never themselves', a
   await assertFails(setDoc(doc(captain, 'booking_roles', 'new-user'), { role: 'master', approvedBy: 'captain' }));
 });
 
+test('only masters can edit the bookable team list', async () => {
+  const anonymous = environment.unauthenticatedContext().firestore();
+  const master = environment.authenticatedContext('booking-master').firestore();
+  const captain = environment.authenticatedContext('captain').firestore();
+  await assertSucceeds(setDoc(doc(master, 'booking_teams', 'amigos'), { name: 'Amigos', group: 'Other Teams' }));
+  await assertSucceeds(getDocs(collection(anonymous, 'booking_teams')));
+  await assertFails(setDoc(doc(master, 'booking_teams', 'bad'), { name: 'Bad', group: 'Not A Group' }));
+  await assertFails(setDoc(doc(master, 'booking_teams', 'bad'), { name: 'Bad', group: 'Other Teams', extra: 1 }));
+  await assertFails(setDoc(doc(captain, 'booking_teams', 'nope'), { name: 'Nope', group: 'Other Teams' }));
+});
+
 test('ground bookings enforce ownership, capacity, metadata and reservations', async () => {
   const anonymous = environment.unauthenticatedContext().firestore();
   const captain = environment.authenticatedContext('captain').firestore();
