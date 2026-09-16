@@ -492,7 +492,7 @@ const [roleManagerLoading, setRoleManagerLoading] = useState(false);
    return (
      <div className="app-container login-page">
        <header className="app-header">
-         <img src="/logo.png" alt="CAP Logo" className="app-logo" />
+         <img src={`${process.env.PUBLIC_URL}/logo.png`} alt="CAP Logo" className="app-logo" />
          <div>
            <h1>Cricket Association of Peoria</h1>
            <p>Welcome to the CAP Ground Booking System</p>
@@ -614,7 +614,7 @@ const [roleManagerLoading, setRoleManagerLoading] = useState(false);
      )}
 
      <header className="app-header">
-       <img src="/logo.png" alt="CAP Logo" className="app-logo" />
+       <img src={`${process.env.PUBLIC_URL}/logo.png`} alt="CAP Logo" className="app-logo" />
        <div>
          <h1>Cricket Association of Peoria</h1>
          <p>Manage your ground bookings with ease</p>
