@@ -51,6 +51,8 @@ export function validateRecord(record) {
   if (!['draft', 'published'].includes(record.status)) throw new Error('Choose draft or published.');
   if (record.registrationUrl && !safeUrl(record.registrationUrl)) throw new Error('Registration requires a valid HTTPS URL.');
   if (record.practiceBookingUrl && !safeUrl(record.practiceBookingUrl)) throw new Error('Practice booking requires a valid HTTPS URL.');
+  if (record.imageUrl && !safeUrl(record.imageUrl)) throw new Error('Announcement image requires a valid HTTPS URL.');
+  if (record.imageAlt && record.imageAlt.length > 160) throw new Error('Image description must be 160 characters or fewer.');
   if (record.startDate && record.endDate && record.endDate < record.startDate) throw new Error('End date must not precede start date.');
   if (record.status === 'published' && record.reviewRequired && !record.reviewed) throw new Error('Review the imported playing conditions before publication.');
   if (!Number.isFinite(new Date(record.publishAt).getTime())) throw new Error('Choose a valid publication date.');
@@ -75,7 +77,7 @@ export function displayDate(value) {
 }
 
 export function freshRecord() {
-  return { id: '', title: '', summary: '', body: emptyBody, status: 'draft', stage: 'upcoming', season: '2026', publishAt: new Date().toISOString(), expiresAt: '', registrationUrl: '', startDate: '', endDate: '', venues: '', format: '', feeText: '', rulesSlug: '', pinned: false, revision: 0 };
+  return { id: '', title: '', summary: '', body: emptyBody, status: 'draft', stage: 'upcoming', season: '2026', publishAt: new Date().toISOString(), expiresAt: '', registrationUrl: '', startDate: '', endDate: '', venues: '', format: '', feeText: '', rulesSlug: '', pinned: false, imageUrl: '', imageAlt: '', revision: 0 };
 }
 
 export function registrationOpen(record, now = new Date()) {

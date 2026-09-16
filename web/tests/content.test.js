@@ -41,3 +41,10 @@ test('expiry and related rules URLs are validated', () => {
   assert.throws(() => validateRecord({ ...record, expiresAt: 'invalid' }), /Expiry/);
   assert.throws(() => validateRecord({ ...record, rulesSlug: '../admin' }), /slug/);
 });
+
+test('announcement image metadata requires a safe URL and concise description', () => {
+  const record = { ...freshRecord(), title: 'Announcement', id: 'announcement' };
+  assert.doesNotThrow(() => validateRecord({ ...record, imageUrl: 'https://firebasestorage.googleapis.com/example.jpg', imageAlt: 'CAP players at the ground' }));
+  assert.throws(() => validateRecord({ ...record, imageUrl: 'javascript:alert(1)' }), /image/);
+  assert.throws(() => validateRecord({ ...record, imageAlt: 'x'.repeat(161) }), /description/);
+});

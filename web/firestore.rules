@@ -108,6 +108,9 @@ service cloud.firestore {
         && data.status in ['draft', 'published']
         && data.body is map && data.body.type == 'doc'
         && data.body.content is list && data.body.content.size() <= 2000
+        && data.get('imageUrl', '') is string && data.get('imageUrl', '').size() <= 2048
+        && (data.get('imageUrl', '') == '' || data.get('imageUrl', '').matches('^https://.*$'))
+        && data.get('imageAlt', '') is string && data.get('imageAlt', '').size() <= 160
         && data.publishAtMs is int && data.publishAtMs >= 0
         && data.updatedBy == request.auth.uid
         && data.revision is int && data.revision > 0
