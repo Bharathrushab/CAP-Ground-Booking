@@ -35,16 +35,26 @@ service cloud.firestore {
     }
     match /booking_roles/{uid} {
       allow get: if signedIn() && request.auth.uid == uid;
-      allow list, write: if false;
+      allow list: if bookingMaster();
+      allow create, update: if bookingMaster() && uid != request.auth.uid
+        && request.resource.data.keys().hasOnly(['role', 'approvedBy'])
+        && request.resource.data.role in ['user', 'captain', 'master']
+        && request.resource.data.approvedBy == request.auth.uid;
+      allow delete: if false;
     }
     match /users/{id} {
       allow get: if ownProfile(id);
+      allow list: if bookingMaster();
       allow create: if ownProfile(id)
-        && request.resource.data.keys().hasOnly(['role', 'name', 'email'])
+        && request.resource.data.keys().hasOnly(['role', 'name', 'email', 'uid'])
         && request.resource.data.role == 'user'
         && request.resource.data.name is string
-        && request.resource.data.email == request.auth.token.email;
-      allow list, update, delete: if false;
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.get('uid', request.auth.uid) == request.auth.uid;
+      allow update: if bookingMaster() && !ownProfile(id)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['role'])
+        && request.resource.data.role in ['user', 'captain', 'master'];
+      allow delete: if false;
     }
     match /slots/{id} {
       allow read: if true;

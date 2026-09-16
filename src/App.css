@@ -533,6 +533,142 @@
   color: #fff;
 }
 
+/* ── Manage roles ── */
+.manage-roles-btn {
+  background: transparent;
+  border: 1px solid #2a7ae2;
+  color: #2a7ae2;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.manage-roles-btn:hover {
+  background: #2a7ae2;
+  color: #fff;
+}
+
+.role-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.role-modal {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  width: 100%;
+  max-width: 480px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+}
+
+.role-modal-title {
+  margin: 0 0 12px 0;
+  font-size: 1.05rem;
+  color: #222;
+}
+
+.role-list {
+  overflow-y: auto;
+  flex: 1;
+  min-height: 120px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 6px;
+}
+
+.role-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.role-row:last-child {
+  border-bottom: none;
+}
+
+.role-row-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.role-row-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.role-row-email {
+  font-size: 0.75rem;
+  color: #888;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.role-row-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.role-option-btn {
+  border: 1px solid #ccc;
+  background: #fff;
+  color: #555;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  text-transform: capitalize;
+  cursor: pointer;
+}
+
+.role-option-btn:hover:not(:disabled) {
+  border-color: #2a7ae2;
+  color: #2a7ae2;
+}
+
+.role-option-btn.active {
+  background: #2a7ae2;
+  border-color: #2a7ae2;
+  color: #fff;
+  cursor: default;
+}
+
+.role-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 14px;
+}
+
+.role-modal-close {
+  padding: 8px 18px;
+  border: none;
+  border-radius: 6px;
+  background: #e0e0e0;
+  color: #333;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
 /* ── Confirm dialog overlay ── */
 .confirm-overlay {
   position: fixed;

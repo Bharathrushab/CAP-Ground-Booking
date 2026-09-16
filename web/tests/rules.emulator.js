@@ -30,6 +30,21 @@ test('booking profiles cannot self-promote and grant documents are private', asy
   await assertFails(getDocs(collection(database, 'users')));
 });
 
+test('masters can grant or revoke booking roles for others, never themselves', async () => {
+  const master = environment.authenticatedContext('booking-master').firestore();
+  const captain = environment.authenticatedContext('captain').firestore();
+  await assertSucceeds(getDocs(collection(master, 'users')));
+  await assertSucceeds(getDocs(collection(master, 'booking_roles')));
+  await assertSucceeds(setDoc(doc(master, 'booking_roles', 'new-user'), { role: 'captain', approvedBy: 'booking-master' }));
+  await assertSucceeds(updateDoc(doc(master, 'users', 'New User_new-user'), { role: 'captain' }));
+  await assertSucceeds(setDoc(doc(master, 'booking_roles', 'new-user'), { role: 'user', approvedBy: 'booking-master' }));
+  await assertFails(setDoc(doc(master, 'booking_roles', 'booking-master'), { role: 'user', approvedBy: 'booking-master' }));
+  await assertFails(setDoc(doc(master, 'booking_roles', 'new-user'), { role: 'captain', approvedBy: 'someone-else' }));
+  await assertFails(updateDoc(doc(master, 'users', 'New User_new-user'), { role: 'captain', email: 'new@example.test' }));
+  await assertFails(getDocs(collection(captain, 'users')));
+  await assertFails(setDoc(doc(captain, 'booking_roles', 'new-user'), { role: 'master', approvedBy: 'captain' }));
+});
+
 test('ground bookings enforce ownership, capacity, metadata and reservations', async () => {
   const anonymous = environment.unauthenticatedContext().firestore();
   const captain = environment.authenticatedContext('captain').firestore();

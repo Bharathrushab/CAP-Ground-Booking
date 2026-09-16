@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { db } from "./firebase";
-import { collection, getDocs, doc, runTransaction } from "firebase/firestore";
+import { collection, getDocs, doc, runTransaction, writeBatch } from "firebase/firestore";
 import { getDoc } from "firebase/firestore";
 import SlotCard from "./components/SlotCard";
 import CageSlotCard from "./components/CageSlotCard";
@@ -25,6 +25,9 @@ function App() {
 //  const [user, setUser] = useState({ uid: "test-captain", displayName: "Test Captain", email: "testcaptain@test.com" });
 const [userRole, setUserRole] = useState(null);
 const [user, setUser] = useState(null);
+const [showRoleManager, setShowRoleManager] = useState(false);
+const [manageableUsers, setManageableUsers] = useState([]);
+const [roleManagerLoading, setRoleManagerLoading] = useState(false);
 
 
 
@@ -75,7 +78,8 @@ const [user, setUser] = useState(null);
           await setDoc(doc(db, "users", docKey), {
             role: "user",
             name: currentUser.displayName || "Unknown",
-            email: currentUser.email || "Unknown"
+            email: currentUser.email || "Unknown",
+            uid: currentUser.uid
           });
           setUser(currentUser);
           setUserRole("user");
@@ -112,7 +116,8 @@ const [user, setUser] = useState(null);
        await setDoc(doc(db, "users", docKey), {
          role: "user",
          name: currentUser.displayName || "Unknown",
-         email: currentUser.email || "Unknown"
+         email: currentUser.email || "Unknown",
+         uid: currentUser.uid
        });
        setUser(currentUser);
        setUserRole("user");
@@ -130,6 +135,47 @@ const [user, setUser] = useState(null);
      setUserRole(null);
    } catch (error) {
      showToast("Logout failed: " + error.message, "error");
+   }
+ };
+
+ // Older profiles were created without a `uid` field; derive it from the doc id (name_uid).
+ const uidOfProfile = (profile) => profile.uid || profile.id.slice(profile.id.lastIndexOf("_") + 1);
+
+ const openRoleManager = async () => {
+   setShowRoleManager(true);
+   setRoleManagerLoading(true);
+   try {
+     const snapshot = await getDocs(collection(db, "users"));
+     const list = snapshot.docs
+       .map((userDoc) => ({ id: userDoc.id, ...userDoc.data() }))
+       .filter((profile) => uidOfProfile(profile) !== user.uid)
+       .sort((a, b) => (a.name || "").localeCompare(b.name || ""));
+     setManageableUsers(list);
+   } catch (error) {
+     showToast("Failed to load users: " + error.message, "error");
+   } finally {
+     setRoleManagerLoading(false);
+   }
+ };
+
+ const closeRoleManager = () => {
+   setShowRoleManager(false);
+   setManageableUsers([]);
+ };
+
+ const handleChangeRole = async (profile, newRole) => {
+   const targetUid = uidOfProfile(profile);
+   try {
+     const batch = writeBatch(db);
+     batch.update(doc(db, "users", profile.id), { role: newRole });
+     batch.set(doc(db, "booking_roles", targetUid), { role: newRole, approvedBy: user.uid });
+     await batch.commit();
+     setManageableUsers((prev) =>
+       prev.map((p) => (p.id === profile.id ? { ...p, role: newRole } : p))
+     );
+     showToast(`${profile.name || profile.email} is now ${newRole}.`);
+   } catch (error) {
+     showToast(error.message, "error");
    }
  };
 
@@ -527,6 +573,46 @@ const [user, setUser] = useState(null);
        </div>
      )}
 
+     {/* Manage roles modal (master only) */}
+     {showRoleManager && (
+       <div className="role-modal-overlay" onClick={closeRoleManager}>
+         <div className="role-modal" onClick={(e) => e.stopPropagation()}>
+           <h3 className="role-modal-title">Manage Roles</h3>
+           {roleManagerLoading ? (
+             <p className="empty-state">Loading users...</p>
+           ) : manageableUsers.length === 0 ? (
+             <p className="empty-state">No other users found.</p>
+           ) : (
+             <div className="role-list">
+               {manageableUsers.map((profile) => (
+                 <div key={profile.id} className="role-row">
+                   <div className="role-row-info">
+                     <span className="role-row-name">{profile.name || "Unknown"}</span>
+                     <span className="role-row-email">{profile.email}</span>
+                   </div>
+                   <div className="role-row-actions">
+                     {["user", "captain", "master"].map((option) => (
+                       <button
+                         key={option}
+                         className={`role-option-btn ${profile.role === option ? "active" : ""}`}
+                         disabled={profile.role === option}
+                         onClick={() => handleChangeRole(profile, option)}
+                       >
+                         {option}
+                       </button>
+                     ))}
+                   </div>
+                 </div>
+               ))}
+             </div>
+           )}
+           <div className="role-modal-footer">
+             <button className="role-modal-close" onClick={closeRoleManager}>Close</button>
+           </div>
+         </div>
+       </div>
+     )}
+
      <header className="app-header">
        <img src="/logo.png" alt="CAP Logo" className="app-logo" />
        <div>
@@ -536,6 +622,9 @@ const [user, setUser] = useState(null);
        <div className="user-info">
          <span className="user-name">{user.displayName || user.email}</span>
          <span className={`role-badge role-${userRole}`}>{userRole}</span>
+         {userRole === "master" && (
+           <button className="manage-roles-btn" onClick={openRoleManager}>Manage Roles</button>
+         )}
          <button className="logout-btn" onClick={handleLogout}>Logout</button>
        </div>
      </header>
