@@ -560,12 +560,6 @@ const [user, setUser] = useState(null);
          🏟️ Ground Booking
        </button>
        <button
-         className={`tab-button ${activeTab === "womens" ? "active" : ""}`}
-         onClick={() => setActiveTab("womens")}
-       >
-         👩 Women's Cricket
-       </button>
-       <button
          className={`tab-button ${activeTab === "cages" ? "active" : ""}`}
          onClick={() => setActiveTab("cages")}
        >
@@ -616,23 +610,6 @@ const [user, setUser] = useState(null);
            onClose={() => setSelectedSlot(null)}
          />
        )}
-     </div>
-     )}
-     {activeTab === "womens" && (
-     <div className="booking-section">
-       <h2>Women's Cricket</h2>
-       <div className="notice-card">
-         <h4>🏏 No practice slots scheduled right now</h4>
-         <p>
-           The CAP Women's League has wrapped up, and no tournaments are confirmed
-           for the near future — so women's practice slots aren't being scheduled yet.
-         </p>
-         <p>
-           Slots will reopen on this tab as soon as the next women's tournament is
-           announced. In the meantime, women's teams can reach out to CAP directly to
-           arrange practice time.
-         </p>
-       </div>
      </div>
      )}
      {activeTab === "cages" && (

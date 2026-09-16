@@ -12,6 +12,8 @@ import RichContent, { Contents } from './components/RichContent';
 import capLogo from '../../Designer.png';
 
 const Admin = lazy(() => import('./pages/Admin'));
+const cricClubsUrl = 'https://cricclubs.com/CricketAssociationofPeoria/';
+const cricClubsRegisterUrl = 'https://cricclubs.com/CricketAssociationofPeoria/register';
 const statusLabels = { reference: '2026 rulebook', upcoming: 'Coming up', registration_open: 'Registration open', in_progress: 'In season', completed: 'Completed' };
 const publicItems = (items = []) => items.filter((record) => isPublic(record));
 
@@ -49,7 +51,7 @@ function Layout({ children }) {
       </div>
     </header>
     <main id="main">{children}</main>
-    <footer className="site-footer"><div className="wrap footer-grid"><div><Link to="/" className="footer-brand" aria-label="CAP home"><img className="footer-logo" src={capLogo} alt="CAP crest" width="120" height="120" loading="lazy" /></Link><p>Cricket Association of Peoria<br />Peoria, Illinois</p></div><div><h2>Stay in the game</h2><Link to="/leagues">Leagues</Link><Link to="/announcements">Announcements</Link><a href={practiceUrl} target="_blank" rel="noopener noreferrer">Practice booking <ArrowUpRight size={14} /></a></div><div><h2>The association</h2><Link to="/about">Contact & committee</Link><Link to="/laws">MCC Laws reference</Link><Link to="/admin">Administrator sign-in</Link></div></div><div className="wrap footer-bottom"><span>© {new Date().getFullYear()} Cricket Association of Peoria</span><span>Play with purpose. Play with respect.</span></div></footer>
+    <footer className="site-footer"><div className="wrap footer-grid"><div><Link to="/" className="footer-brand" aria-label="CAP home"><img className="footer-logo" src={capLogo} alt="CAP crest" width="120" height="120" loading="lazy" /></Link><p>Cricket Association of Peoria<br />Peoria, Illinois</p></div><div><h2>Stay in the game</h2><Link to="/leagues">Leagues</Link><Link to="/announcements">Announcements</Link><a href={cricClubsRegisterUrl} target="_blank" rel="noopener noreferrer">Register with CAP <ArrowUpRight size={14} /></a><a href={cricClubsUrl} target="_blank" rel="noopener noreferrer">CricClubs scores & matches <ArrowUpRight size={14} /></a><a href={practiceUrl} target="_blank" rel="noopener noreferrer">Practice booking <ArrowUpRight size={14} /></a></div><div><h2>The association</h2><Link to="/about">Contact & committee</Link><Link to="/laws">MCC Laws reference</Link><Link to="/admin">Administrator sign-in</Link></div></div><div className="wrap footer-bottom"><span>© {new Date().getFullYear()} Cricket Association of Peoria</span><span>Play with purpose. Play with respect.</span></div></footer>
     {notice && <div className="toast" role="status">{notice}<button className="icon-button" onClick={() => setNotice('')} aria-label="Dismiss notification"><X size={16} /></button></div>}
   </>;
 }
@@ -96,6 +98,10 @@ function Home() {
   const tournaments = publicItems(content.tournaments);
   return <><Hero bookingUrl={safeUrl(settings.practiceBookingUrl) || practiceUrl} />
     {announcements[0] && <Link className="news-strip" to={`/announcements/${announcements[0].id}`}><span className="wrap"><strong>FROM THE ASSOCIATION</strong><span>{announcements[0].title}</span><ArrowRight size={19} /></span></Link>}
+    <section className="section wrap" aria-labelledby="cricclubs-heading">
+      <div className="section-heading"><div><span className="eyebrow">Registration & match centre</span><h2 id="cricclubs-heading">CAP on CricClubs</h2><p>Live scores, matches, leagues and standings.</p></div></div>
+      <div className="filter-bar"><a className="button" href={cricClubsRegisterUrl} target="_blank" rel="noopener noreferrer">Register with CAP <ArrowUpRight size={17} /></a><a className="button outline" href={cricClubsUrl} target="_blank" rel="noopener noreferrer">View scores & matches <ArrowUpRight size={17} /></a></div>
+    </section>
     <section className="section wrap"><div className="section-heading"><div><span className="eyebrow">Find your competition</span><h2>A season for everyone.</h2></div><Link className="text-link" to="/leagues">All leagues <ArrowRight size={17} /></Link></div><ResourceState resource="leagues" />{leagues.length ? <LeagueGrid items={leagues.slice(0, 3)} /> : <p className="empty-state">League details will appear here when published.</p>}</section>
     <PracticePanel />
     <section className="section wrap"><div className="section-heading"><div><span className="eyebrow">Around the boundary</span><h2>Latest from CAP.</h2></div><Link className="text-link" to="/announcements">All announcements <ArrowRight size={17} /></Link></div><ResourceState resource="announcements" />{announcements.slice(0, 3).map((item) => <Link className="news-row" to={`/announcements/${item.id}`} key={item.id}><span className="news-date">{displayDate(item.publishAt)}</span><span><small className="eyebrow">{item.category || 'Association'}</small><h3>{item.title}</h3><p>{item.summary}</p></span><ArrowUpRight /></Link>)}</section>

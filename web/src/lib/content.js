@@ -8,7 +8,7 @@ export const resources = {
 };
 
 export const emptyBody = { type: 'doc', content: [{ type: 'paragraph' }] };
-export const practiceUrl = 'https://cap-practice-booking.web.app';
+export const practiceUrl = 'https://cricket-peoria.web.app/practice-booking';
 export const textBody = (text) => ({ type: 'doc', content: [{ type: 'paragraph', content: [{ type: 'text', text }] }] });
 
 export function safeUrl(value) {

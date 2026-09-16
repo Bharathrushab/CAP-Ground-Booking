@@ -2,6 +2,7 @@
   "name": "cap-ground-booking",
   "version": "1.0.0",
   "private": true,
+  "homepage": "/practice-booking",
   "dependencies": {
     "@dataconnect/generated": "file:src/dataconnect-generated",
     "@emailjs/browser": "^4.4.1",

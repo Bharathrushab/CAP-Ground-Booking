@@ -14,10 +14,11 @@
       "**/.*",
       "**/node_modules/**"
     ],
-    "rewrites": [
+    "redirects": [
       {
-        "source": "**",
-        "destination": "/index.html"
+        "source": "/**",
+        "destination": "https://cricket-peoria.web.app/practice-booking",
+        "type": 301
       }
     ]
   }

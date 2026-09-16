@@ -20,7 +20,7 @@ const TEAM_GROUPS = [
   },
   {
     label: "Women's Teams",
-    teams: ["Panthers", "Powerplay Divas", "Velocity Vixens"],
+    teams: ["Panthers", "Powerplay Divas", "Queens", "Royals", "Velocity Vixens", "Warriors"],
   },
   {
     label: "Other Teams",
