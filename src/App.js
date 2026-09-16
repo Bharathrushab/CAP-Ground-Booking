@@ -733,15 +733,19 @@ const [newTeamGroup, setNewTeamGroup] = useState(TEAM_GROUPS[0].label);
          <p>Manage your ground bookings with ease</p>
        </div>
        <div className="user-info">
-         <span className="user-name">{user.displayName || user.email}</span>
-         <span className={`role-badge role-${userRole}`}>{userRole}</span>
-         {userRole === "master" && (
-           <button className="manage-roles-btn" onClick={openRoleManager}>Manage Roles</button>
-         )}
-         {userRole === "master" && (
-           <button className="manage-roles-btn" onClick={() => setShowTeamManager(true)}>Manage Teams</button>
-         )}
-         <button className="logout-btn" onClick={handleLogout}>Logout</button>
+         <div className="user-meta">
+           <span className="user-name">{user.displayName || user.email}</span>
+           <span className={`role-badge role-${userRole}`}>{userRole}</span>
+         </div>
+         <div className="user-actions">
+           {userRole === "master" && (
+             <button className="manage-roles-btn" onClick={openRoleManager}>Manage Roles</button>
+           )}
+           {userRole === "master" && (
+             <button className="manage-roles-btn" onClick={() => setShowTeamManager(true)}>Manage Teams</button>
+           )}
+           <button className="logout-btn" onClick={handleLogout}>Logout</button>
+         </div>
        </div>
      </header>
 

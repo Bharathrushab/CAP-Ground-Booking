@@ -45,8 +45,20 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 4px;
+  gap: 6px;
   margin-left: auto;
+}
+
+.user-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.user-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .user-name {
@@ -374,13 +386,24 @@
     height: 36px;
   }
   .user-info {
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
     width: 100%;
-    justify-content: center;
     gap: 8px;
     border-top: 1px solid #e0e0e0;
     padding-top: 8px;
+  }
+  .user-actions {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .user-actions .manage-roles-btn,
+  .user-actions .logout-btn {
+    margin-left: 0;
+    flex: 0 1 auto;
+    padding: 7px 10px;
+    font-size: 0.72rem;
+    white-space: nowrap;
   }
   .tab-bar {
     flex-direction: column;
@@ -525,7 +548,6 @@
   font-size: 0.8rem;
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
-  margin-left: auto;
 }
 
 .logout-btn:hover {
