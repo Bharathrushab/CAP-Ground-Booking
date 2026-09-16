@@ -160,7 +160,35 @@ function About() {
   const { content } = useSite();
   const settings = useSettings();
   const email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(settings.contactEmail || '') ? settings.contactEmail : 'cappeoria1@gmail.com';
-  return <div className="wrap section"><div className="page-heading"><span className="eyebrow">Our association</span><h1>A community<br />built around cricket.</h1><p>Cricket Association of Peoria / Peoria, Illinois</p></div><div className="about-layout"><section><h2>See you at the ground.</h2><p>From league cricket to a weekday practice session, CAP brings players together through a shared love of the game.</p><a className="button" href={`mailto:${email}`}><Mail size={18} /> Contact CAP</a><p className="muted">{email}</p></section><section><h2>Committee</h2><ResourceState resource="committee" />{publicItems(content.committee).length ? publicItems(content.committee).sort((first, second) => (first.order || 0) - (second.order || 0)).map((member) => <div className="committee-row" key={member.id}><span className="initials">{member.title.split(' ').map((part) => part[0]).slice(0, 2).join('')}</span><span><strong>{member.title}</strong><small>{member.summary}</small></span></div>) : <p>For league enquiries, playing conditions and association matters, contact CAP by email.</p>}</section></div></div>;
+  return <div className="wrap section"><div className="page-heading"><span className="eyebrow">Our association</span><h1>A community<br />built around cricket.</h1><p>Cricket Association of Peoria / Peoria, Illinois</p></div><div className="about-layout"><section><h2>See you at the ground.</h2><p>CAP is run entirely by a group of cricket enthusiast volunteers who organize leagues, grounds and match days for the community.</p><a className="button" href={`mailto:${email}`}><Mail size={18} /> Contact CAP</a><p className="muted">{email}</p></section><section><h2>Committee</h2><ResourceState resource="committee" />{publicItems(content.committee).length ? publicItems(content.committee).sort((first, second) => (first.order || 0) - (second.order || 0)).map((member) => <div className="committee-row" key={member.id}><span className="initials">{member.title.split(' ').map((part) => part[0]).slice(0, 2).join('')}</span><span><strong>{member.title}</strong><small>{member.summary}</small></span></div>) : <p>For league enquiries, playing conditions and association matters, contact CAP by email.</p>}</section></div><OurLeagues /><TournamentGrounds /></div>;
+}
+
+function OurLeagues() {
+  const leagues = [
+    'CAP Indoor League', 'CAP Spring League', 'CAP Premier League', 'CAP Champions League',
+    'CAP Fall League', 'CAP Super 6', "CAP Women's Premier League", "CAP Women's Fall League",
+  ];
+  return <section className="section" aria-labelledby="our-leagues-heading">
+    <div className="section-heading"><div><h2 id="our-leagues-heading">Leagues we run</h2><p>Running from January to October, depending on feasibility each season.</p></div></div>
+    <div className="league-list">
+      {leagues.map((league) => <div className="committee-row" key={league}><span>{league}</span></div>)}
+    </div>
+  </section>;
+}
+
+function TournamentGrounds() {
+  return <section className="section" aria-labelledby="tournament-grounds-heading">
+    <div className="section-heading"><div><h2 id="tournament-grounds-heading">Tournament grounds</h2><p>CAP tournaments are played at CAP Ground and Mossville Ground.</p></div></div>
+    <div className="about-layout">
+      {[
+        { name: 'CAP Ground', url: 'https://maps.app.goo.gl/CC84sTuJoYLRCMdQ6' },
+        { name: 'Mossville Ground', url: 'https://maps.app.goo.gl/h43GWWLJf64bEfyT9' },
+      ].map((ground) => <div key={ground.name}>
+        <h3>{ground.name}</h3>
+        <a className="text-link" href={ground.url} target="_blank" rel="noopener noreferrer" aria-label={`${ground.name} on Google Maps`}><MapPin size={18} /> Google Maps <ArrowUpRight size={17} /></a>
+      </div>)}
+    </div>
+  </section>;
 }
 
 function NotFound() { return <div className="wrap section empty-state"><span className="eyebrow">404</span><h1>Outside the boundary.</h1><p>This page is unavailable or has not been published.</p><Link className="button" to="/">Back to CAP <ArrowRight size={17} /></Link></div>; }
