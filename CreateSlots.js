@@ -1,8 +1,5 @@
-import { initializeApp } from "firebase/app";
-import { getFirestore, collection, addDoc, deleteDoc, query, where, getDocs, doc } from "firebase/firestore";
-import firebaseConfig from "./firebase-config.js";
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+import { maintenanceDatabase, collection, addDoc, deleteDoc, query, where, getDocs, doc } from "./scripts/authenticate-automation.mjs";
+const db = await maintenanceDatabase();
 // ⏱ Slot timings
 const times = [
  "5:00-7:30PM"

@@ -1,7 +1,12 @@
 node_modules/
 build/
+web/dist/
+web/test-results/
+web/playwright-report/
 .env
 .env.local
+.env.*.local
+.deployment-backups/
 .firebase/
 .firebaserc
 .DS_Store

@@ -1,9 +1,5 @@
-import { initializeApp } from "firebase/app";
-import { getFirestore, collection, addDoc, deleteDoc, query, where, getDocs, doc } from "firebase/firestore";
-import firebaseConfig from "./firebase-config.js";
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+import { maintenanceDatabase, collection, addDoc, deleteDoc, query, where, getDocs, doc } from "./scripts/authenticate-automation.mjs";
+const db = await maintenanceDatabase();
 
 const cages = ["Cage 1", "Cage 2"];
 const weekdayTimes = ["5:00-6:30 PM", "6:30-8:00 PM"];

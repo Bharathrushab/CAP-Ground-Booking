@@ -1,9 +1,5 @@
-import { initializeApp } from "firebase/app";
-import { getFirestore, collection, deleteDoc, query, where, getDocs, doc } from "firebase/firestore";
-import firebaseConfig from "./firebase-config.js";
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+import { maintenanceDatabase, collection, deleteDoc, query, where, getDocs, doc } from "./scripts/authenticate-automation.mjs";
+const db = await maintenanceDatabase();
 
 // Remove obsolete "5:00-7:00 PM" weekday cage slots (replaced by 5:00-6:30 PM and 6:30-8:00 PM)
 async function deleteOldCageTime() {

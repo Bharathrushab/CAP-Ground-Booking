@@ -1,9 +1,5 @@
-import { initializeApp } from "firebase/app";
-import { getFirestore, collection, addDoc, deleteDoc, doc, query, where, getDocs } from "firebase/firestore";
-import firebaseConfig from "./firebase-config.js";
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+import { maintenanceDatabase, collection, addDoc, deleteDoc, doc, query, where, getDocs } from "./scripts/authenticate-automation.mjs";
+const db = await maintenanceDatabase();
 
 const date = "2026-07-16"; // Thursday this week
 const time = "5:00-7:30PM";

@@ -1,0 +1,111 @@
+.hero .pitch-art {
+  background: none;
+}
+
+.cricket-field {
+  position: absolute;
+  width: min(40%, 530px);
+  aspect-ratio: 1.13;
+  right: 2.5%;
+  top: 48px;
+  border: 2px solid #cdddb080;
+  border-radius: 50%;
+  background: repeating-linear-gradient(0deg, #34764740 0 9%, #28643c40 9% 18%);
+  box-shadow: 0 0 0 7px #82a46612, inset 0 0 35px #0c2c2440;
+}
+
+.cricket-infield {
+  position: absolute;
+  width: 43%;
+  height: 62%;
+  left: 28.5%;
+  top: 19%;
+  border: 1px dashed #e5ead480;
+  border-radius: 999px;
+}
+
+.cricket-square {
+  position: absolute;
+  width: 13%;
+  height: 22%;
+  left: 43.5%;
+  top: 39%;
+  background: repeating-linear-gradient(90deg, #b2aa6445 0 19%, #b2aa6425 19% 20%);
+}
+
+.cricket-pitch {
+  position: absolute;
+  width: 2.5%;
+  height: 17%;
+  left: 48.75%;
+  top: 41.5%;
+  background: #c6b789;
+}
+
+.pitch-crease {
+  position: absolute;
+  width: 88.667%;
+  height: 12.121%;
+  left: 5.667%;
+  box-shadow: inset 1px 0 #f1f0df, inset -1px 0 #f1f0df;
+}
+
+.popping-crease {
+  position: absolute;
+  width: 135.338%;
+  left: -17.669%;
+  border-top: 1px solid #f1f0df;
+}
+
+.bowling-crease {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  border-top: 1px solid #f1f0df;
+}
+
+.wide-guides {
+  position: absolute;
+  width: 66.038%;
+  left: 16.981%;
+  height: 50%;
+  border-inline: 1px solid #f1f0df;
+}
+
+.crease-top { top: -6.061%; }
+.crease-top .popping-crease { bottom: 0; }
+.crease-top .wide-guides { bottom: 0; }
+.crease-bottom { bottom: -6.061%; }
+.crease-bottom .popping-crease { top: 0; }
+.crease-bottom .wide-guides { top: 0; }
+
+.hero img.static-ball {
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
+  transform: none;
+  object-fit: contain;
+  filter: drop-shadow(10px 18px 12px #071d2160);
+}
+
+@media (max-width: 1100px) and (min-width: 701px) {
+  .cricket-field { top: 140px; }
+}
+
+@media (max-width: 700px) {
+  .hero .hero-bottom { margin-top: 195px; }
+  .cricket-field {
+    width: 200px;
+    right: 105px;
+    top: auto;
+    bottom: 65px;
+    opacity: 0.75;
+  }
+  .hero img.static-ball {
+    width: 150px;
+    height: 150px;
+    right: 28px;
+    bottom: 80px;
+  }
+}

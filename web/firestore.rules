@@ -1,0 +1,114 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function bookingRole() {
+      return signedIn() && exists(/databases/$(database)/documents/booking_roles/$(request.auth.uid))
+        ? get(/databases/$(database)/documents/booking_roles/$(request.auth.uid)).data.role
+        : 'user';
+    }
+    function bookingMaster() { return signedIn() && bookingRole() == 'master'; }
+    function bookingCaptain() { return signedIn() && bookingRole() in ['captain', 'master']; }
+    function ownProfile(id) {
+      return signedIn() && id == request.auth.token.get('name', 'null') + '_' + request.auth.uid;
+    }
+    function validBooking(entry) {
+      return entry is map && entry.keys().hasOnly(['team', 'uid', 'name'])
+        && entry.team is string && entry.team.size() > 0 && entry.team.size() <= 100
+        && entry.uid == request.auth.uid
+        && entry.name is string && entry.name.size() > 0 && entry.name.size() <= 200;
+    }
+    function groundChange() {
+      let before = resource.data.get('booked_by_teams', []);
+      let after = request.resource.data.booked_by_teams;
+      return after is list && after.size() <= 2 && (
+        (bookingCaptain() && !resource.data.get('reserved', false)
+          && after.size() == before.size() + 1
+          && validBooking(after[before.size()])
+          && (before.size() == 0 || (after[0] == before[0] && after[1].team != before[0].team)))
+        || (bookingMaster() && before.hasAll(after))
+        || (signedIn() && (
+          (before.size() == 1 && after.size() == 0 && before[0].uid == request.auth.uid)
+          || (before.size() == 2 && after.size() == 1 && (
+            (after[0] == before[0] && before[1].uid == request.auth.uid)
+            || (after[0] == before[1] && before[0].uid == request.auth.uid))))));
+    }
+    match /booking_roles/{uid} {
+      allow get: if signedIn() && request.auth.uid == uid;
+      allow list, write: if false;
+    }
+    match /users/{id} {
+      allow get: if ownProfile(id);
+      allow create: if ownProfile(id)
+        && request.resource.data.keys().hasOnly(['role', 'name', 'email'])
+        && request.resource.data.role == 'user'
+        && request.resource.data.name is string
+        && request.resource.data.email == request.auth.token.email;
+      allow list, update, delete: if false;
+    }
+    match /slots/{id} {
+      allow read: if true;
+      allow create, delete: if bookingMaster();
+      allow update: if (
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['booked_by_teams'])
+        && groundChange()) || (
+        bookingMaster()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reserved', 'reserved_by', 'booked_by_teams'])
+        && request.resource.data.get('booked_by_teams', []) == resource.data.get('booked_by_teams', [])
+        && request.resource.data.reserved is bool
+        && ((request.resource.data.reserved && request.resource.data.reserved_by is string)
+          || (!request.resource.data.reserved && request.resource.data.reserved_by == null)));
+    }
+    match /cage_slots/{id} {
+      allow read: if true;
+      allow create, delete: if bookingMaster();
+      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['booked_by'])
+        && ((bookingCaptain() && resource.data.get('booked_by', null) == null
+            && validBooking(request.resource.data.booked_by))
+          || (signedIn() && request.resource.data.booked_by == null
+            && resource.data.get('booked_by', null) != null
+            && (bookingMaster() || resource.data.booked_by.uid == request.auth.uid)));
+    }
+    function admin() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/cap_admins/$(request.auth.uid))
+        && get(/databases/$(database)/documents/cap_admins/$(request.auth.uid)).data.enabled == true
+        && get(/databases/$(database)/documents/cap_admins/$(request.auth.uid)).data.role == 'master';
+    }
+    function cmsCollection(name) {
+      return name in ['cap_announcements', 'cap_leagues', 'cap_tournaments', 'cap_rules', 'cap_committee', 'cap_settings'];
+    }
+    function publicDocument() {
+      return resource.data.status == 'published'
+        && resource.data.publishAtMs <= request.time.toMillis();
+    }
+    function validDocument(id) {
+      let data = request.resource.data;
+      return data.id == id && id.matches('^[a-z0-9]+(-[a-z0-9]+)*$')
+        && data.title is string && data.title.size() > 0 && data.title.size() <= 160
+        && data.status in ['draft', 'published']
+        && data.body is map && data.body.type == 'doc'
+        && data.body.content is list && data.body.content.size() <= 2000
+        && data.publishAtMs is int && data.publishAtMs >= 0
+        && data.updatedBy == request.auth.uid
+        && data.revision is int && data.revision > 0
+        && (data.status == 'draft' || data.get('reviewRequired', false) == false || data.get('reviewed', false) == true);
+    }
+    match /cap_admins/{uid} {
+      allow get: if signedIn() && request.auth.uid == uid;
+      allow list, write: if false;
+    }
+    match /{name}/{id} {
+      allow read: if cmsCollection(name) && (admin() || publicDocument());
+      allow create: if cmsCollection(name) && admin() && validDocument(id) && request.resource.data.revision == 1;
+      allow update: if cmsCollection(name) && admin() && validDocument(id) && request.resource.data.revision == resource.data.revision + 1;
+      allow delete: if cmsCollection(name) && admin();
+    }
+    match /cap_revisions/{id} {
+      allow read: if admin();
+      allow create: if admin() && request.resource.data.actor == request.auth.uid
+        && request.resource.data.action in ['save', 'delete'];
+      allow update, delete: if false;
+    }
+  }
+}
