@@ -51,46 +51,6 @@ function Ball() {
     const context = canvas.getContext('2d');
     context.fillStyle = '#850d1d';
     context.fillRect(0, 0, canvas.width, canvas.height);
-    context.translate(canvas.width * 0.18, canvas.height * 0.30);
-    context.rotate(-Math.PI / 3);
-    context.scale(0.65, 1);
-    context.fillStyle = '#c4ac69';
-    context.strokeStyle = '#c4ac69';
-    context.globalAlpha = 0.85;
-    context.lineWidth = 2.5;
-    context.textAlign = 'center';
-    context.textBaseline = 'middle';
-    context.font = 'bold 25px Georgia';
-    const arcText = (text, radius, center, direction) => {
-      const widths = [...text].map((letter) => context.measureText(letter).width);
-      let angle = center - direction * widths.reduce((sum, width) => sum + width, 0) / radius / 2;
-      [...text].forEach((letter, index) => {
-        const step = widths[index] / radius;
-        angle += direction * step / 2;
-        context.save();
-        context.translate(Math.cos(angle) * radius, Math.sin(angle) * radius);
-        context.rotate(angle + direction * Math.PI / 2);
-        context.fillText(letter, 0, 0);
-        context.restore();
-        angle += direction * step / 2;
-      });
-    };
-    arcText('CRICKET ASSOCIATION', 125, -Math.PI / 2, 1);
-    arcText('OF PEORIA', 120, Math.PI / 2, -1);
-    context.beginPath();
-    context.moveTo(-70, -58);
-    context.quadraticCurveTo(0, -76, 70, -58);
-    context.lineTo(63, 24);
-    context.quadraticCurveTo(45, 62, 0, 81);
-    context.quadraticCurveTo(-45, 62, -63, 24);
-    context.closePath();
-    context.stroke();
-    context.font = 'bold 59px Georgia';
-    context.fillText('CAP', 0, -3);
-    context.beginPath();
-    context.moveTo(-30, 36);
-    context.lineTo(30, 36);
-    context.stroke();
     const texture = new CanvasTexture(canvas);
     texture.colorSpace = SRGBColorSpace;
     texture.anisotropy = 4;
@@ -115,10 +75,10 @@ function Ball() {
     document.addEventListener('visibilitychange', change);
     return () => document.removeEventListener('visibilitychange', change);
   }, []);
-  useFrame((state, delta) => {
+  useFrame((state) => {
     if (!visible.current || !group.current) return;
-    group.current.rotation.y += Math.min(delta, 0.05) * 0.13;
-    group.current.rotation.z = -1.05 + state.pointer.x * 0.08;
+    group.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.35) * 0.08;
+    group.current.rotation.z = -1.05 + Math.sin(state.clock.elapsedTime * 0.5) * 0.025 + state.pointer.x * 0.05;
   });
   return <group ref={group} position={[2.5, 0, 0]} rotation={[0.15, 0, -1.05]}>
     <mesh castShadow><sphereGeometry args={[1.48, 96, 96]} /><meshPhysicalMaterial map={surface} roughness={0.48} metalness={0} clearcoat={0.15} clearcoatRoughness={0.45} bumpMap={leather} bumpScale={0.025} /></mesh>

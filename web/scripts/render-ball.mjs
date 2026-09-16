@@ -1,6 +1,8 @@
 import { chromium } from '@playwright/test';
 import { mkdir, writeFile } from 'node:fs/promises';
 
+const previewUrl = process.argv[2] || 'http://127.0.0.1:5174/';
+
 const browser = await chromium.launch({ channel: 'msedge' });
 try {
   const page = await browser.newPage({ viewport: { width: 1440, height: 1000 }, deviceScaleFactor: 2 });
@@ -10,7 +12,7 @@ try {
       return original.call(this, type, type.startsWith('webgl') ? { ...options, preserveDrawingBuffer: true } : options);
     };
   });
-  await page.goto('http://127.0.0.1:5174/');
+  await page.goto(previewUrl);
   await page.locator('.hero canvas').waitFor();
   await page.waitForFunction(() => {
     const canvas = document.querySelector('.hero canvas');
