@@ -1,265 +1,151 @@
-# CAP Ground Booking
+# Cricket Association of Peoria Website
 
-A cricket ground and batting cage reservation system for the **Cricket Association of Peoria (CAP)**. Team captains book practice slots across multiple grounds and batting cages. Administrators (masters) have elevated privileges to reserve and manage slots.
+The official web platform for the **Cricket Association of Peoria (CAP)**. It combines CAP's public website, league and rules information, announcements, content administration, and practice-ground booking in one responsive application.
 
-🔗 **Live App**: [cap-practice-booking.web.app](https://cap-practice-booking.web.app)
-
----
+**Live website:** [cricket-peoria.com](https://cricket-peoria.com)  
+**Practice booking:** [cricket-peoria.com/practice-booking](https://cricket-peoria.com/practice-booking)
 
 ## Features
 
-### Ground Booking
-- Book practice slots at **CAP Ground** or **Mossville**
-- Up to **2 teams per slot** (Mon–Fri, 5:00–7:30 PM)
-- One slot per team — no double-booking
-- Masters can **reserve slots** to block them from regular booking
+### Public Website
 
-### Batting Cage Booking
-- Book batting cage sessions at **Cage 1** or **Cage 2**
-- **Weekday slots**: 5:00–7:00 PM
-- **Weekend slots**: 10 AM–12 PM, 12–2 PM, 2–4 PM, 4–6 PM
-- One cage booking per user per weekend/weekday
-- One cage booking per team per weekend/weekday
+- CAP association information and volunteer-led community overview
+- League, tournament, committee, ground, and registration information
+- Searchable cricket laws and CAP league rules
+- News and announcements with image support
+- CricClubs registration, scores, and match links
+- Responsive layouts for desktop and mobile
 
-### User Roles
-| Role | Permissions |
-|------|------------|
-| **Captain** | Book and cancel slots for their team |
-| **Master** | Book, cancel, reserve slots, and manage all bookings |
-| **User** | View-only access |
+### Content Management
 
-### Other
-- Real-time updates via Firestore listeners
-- Mobile-friendly responsive design
-- Google OAuth and email/password sign-in
+- Google-authenticated administration area at `/admin`
+- Create, edit, schedule, publish, and archive website content
+- Rich-text rules, tables, callouts, and print-friendly pages
+- Direct announcement image upload to Firebase Storage
+- Revision history and transaction-based conflict protection
+- Explicit CMS administrator grants through `cap_admins`
 
----
+### Practice Booking
 
-## Tech Stack
+- Ground and batting-cage reservations under `/practice-booking`
+- Real-time availability through Firestore listeners
+- Atomic booking updates using Firestore transactions
+- Captain, master, and view-only user roles
+- Master controls for reservations, booking roles, and team lists
+- Mobile-friendly booking and administration screens
 
-- **Frontend**: React 18 (Create React App)
-- **Backend/DB**: Firebase — Firestore, Auth, Hosting
-- **Language**: JavaScript (no TypeScript)
+## Technology
 
----
+| Area | Stack |
+|------|-------|
+| Public website and CMS | React 18, Vite, React Router |
+| Practice booking | React 18, Create React App |
+| Data and authentication | Firebase Firestore and Firebase Auth |
+| Announcement images | Firebase Storage |
+| Hosting | Firebase Hosting |
+| Testing | Node test runner and Playwright |
 
-## Setup
+The Vite website lives in `web/`. The booking application remains at the repository root and is merged into `web/dist/practice-booking` during a production website build.
 
-### 1. Clone the repo
-```bash
-git clone https://github.com/Bharathrushab/CAP-Ground-Booking.git
-cd CAP-Ground-Booking
-```
+## Local Development
 
-### 2. Install dependencies
-```bash
+### Public Website and CMS
+
+```powershell
+cd web
 npm install
+npm run dev
 ```
 
-### 3. Configure Firebase
-Copy the example config and add your own Firebase credentials:
-```bash
-cp firebase-config.example.js firebase-config.js
-```
-Edit `firebase-config.js` with your Firebase project details. Contact [@Bharathrushab](https://github.com/Bharathrushab) for access to the existing project, or create your own Firebase project.
+Open `http://127.0.0.1:5173/` for the website and `/admin` for the CMS. Copy `web/.env.example` to `web/.env.local` and add the Firebase web configuration to connect to live services. Without it, the site runs in clearly labeled local-preview mode.
 
-### 4. Run locally
-```bash
+### Practice Booking
+
+```powershell
+npm install
 npm start
 ```
-App runs at `http://localhost:3000`
 
----
+The booking app runs at `http://localhost:3000`.
 
-## Slot Generation
+## Verification
 
-Ground and cage slots are generated weekly using standalone scripts:
+Run website checks from `web/`:
 
-```bash
-node CreateSlots.js      # Generate ground slots for next Mon–Fri
-node CreateCageSlots.js  # Generate cage slots for next Mon–Sun
-```
-
-These scripts write directly to Firestore. They run on a schedule (Saturday 8 AM for grounds, Sunday 6 PM for cages) or can be run manually.
-
----
-
-## Predefined Teams
-
-AYF · Bradley Bulls · Challengers · CMCC · Fearless XI · Gladiators · GodFather's XI · Hurricanes · MKCC · PCC · Peoria Knights · Peoria United · RCP · Red Devils · Super Strikers · SuperKings XI
-
----
-
-## Deploy
-
-```bash
+```powershell
+npm test
+npm run test:browser
 npm run build
-firebase deploy
 ```
 
----
+Browser tests require Microsoft Edge. Firestore rules tests additionally require Java and the Firebase CLI:
+
+```powershell
+npm run test:rules
+```
+
+Build the standalone booking app from the repository root:
+
+```powershell
+npm run build
+```
+
+## Production Build and Deployment
+
+Build the booking app first, then build and deploy the complete website:
+
+```powershell
+# Repository root
+npm run build
+
+# web/
+cd web
+npm run build
+npx firebase-tools deploy --only hosting:main --project cap-practice-booking
+```
+
+The `web` production build automatically copies the booking build into `/practice-booking`.
+
+Firestore and Storage security rules are deployed separately and should be tested before release:
+
+```powershell
+cd web
+npx firebase-tools deploy --only firestore:rules,storage --config firebase.security.json --project cap-practice-booking
+```
+
+## Slot Maintenance
+
+Standalone scripts generate ground and cage availability in Firestore:
+
+```powershell
+node CreateSlots.js
+node CreateCageSlots.js
+```
+
+Additional one-week and maintenance scripts are available in the repository root. Run them only with an authenticated, authorized Firebase account.
+
+## Security Model
+
+- Booking writes use Firestore transactions.
+- Booking permissions are stored in `booking_roles/{uid}`.
+- CMS permissions are stored separately in `cap_admins/{uid}`.
+- Website content writes are restricted to enabled CMS masters.
+- Announcement images are publicly readable but writable only by CMS masters.
+- Client applications cannot grant themselves administrative access.
+
+## Repository Layout
+
+```text
+src/                     Practice-booking application
+web/src/                 Public website and CMS
+web/tests/               Unit, browser, and security-rule tests
+web/firestore.rules      Shared Firestore security policy
+web/storage.rules        Announcement image security policy
+web/scripts/             Content, verification, and deployment utilities
+CreateSlots*.js          Ground slot generation scripts
+CreateCageSlots*.js      Cage slot generation scripts
+```
 
 ## License
 
 Private project for the Cricket Association of Peoria.
-
----
-
-## CAP Association Website
-
-The `cap-website` branch adds an independent Vite/React application in `web/`.
-It does not change the existing booking application's build or deployment.
-
-### Local Preview
-
-```powershell
-cd web
-npm ci
-npm run dev -- --port 5174 --strictPort
-```
-
-Open `http://127.0.0.1:5174/` for the website and `/admin` for its CMS.
-Without Firebase configuration, the app uses a labeled local preview. Sample
-announcements are not live events. Preview edits persist in browser local
-storage; use **Reset preview** in the admin overview to discard them.
-
-Features include league/tournament directories, registration links, announcements,
-committee/contact editing, rich-text rules with tables and callouts, print/PDF,
-all 42 original CAP Laws summaries plus the Preamble, and a lazy-loaded Three.js
-cricket ball. Mobile and reduced-motion views use a static cricket illustration.
-
-### Firebase Connection and Access
-
-Use the existing `cap-practice-booking` Firebase project, with a second Hosting
-site. Enter its web app configuration in `web/.env.local` using `web/.env.example`
-as the field reference, then restart Vite. No production config is supplied by
-default. Firebase web API keys identify the project; security depends on rules,
-not on hiding those keys. Never put service-account credentials in client code.
-
-The CMS uses `cap_announcements`, `cap_leagues`, `cap_tournaments`, `cap_rules`,
-`cap_committee`, `cap_settings`, and an append-only `cap_revisions` history.
-All live content saves/deletes use transactions with revision conflict checks.
-Published pages are public after their publication timestamp. Public queries
-refresh their publication cutoff each minute; reload to refresh practice
-availability. Expired content is hidden from public pages but is not confidential:
-it was previously published and may remain readable or cached.
-
-Website administrators sign in with Google. A trusted Firebase project owner
-must explicitly create `cap_admins/{firebase-auth-uid}` with
-`{ "enabled": true, "role": "master" }`. The browser cannot create or edit grants.
-Reuse the same Auth account, but do not derive privileges from a display name.
-Existing practice `master` roles are NOT automatically website grants: review
-and provision them explicitly. Users sign in separately on different origins.
-
-The shared production policy is now in `web/firestore.rules`. It protects both
-booking and CMS collections and replaces the audited unrestricted wildcard.
-Run the combined emulator role tests before any rules deployment. Use the separate
-`web/firebase.security.json` for intentional security releases; website Hosting
-deployments do not change rules. Add missing indexes without deleting existing ones.
-
-Booking authorization uses protected `booking_roles/{firebase-auth-uid}` documents
-with `role: "captain"` or `role: "master"`. The existing booking UI still reads its
-legacy `users/{displayName}_{uid}` profile. A trusted project owner must update
-both records when changing booking roles; client applications cannot grant roles.
-The initial 54 booking grants were explicitly approved by the project owner.
-Website CMS grants remain separate, with only the approved website administrator.
-
-Ground capacity, reservations, booking ownership and cage exclusivity are enforced
-by rules. Cross-slot team/user quotas remain client-side checks in the existing
-booking app and are not race-proof; enforcing those globally requires a separate
-transactional booking-index migration. Current cage code allows two bookings per
-weekday/weekend type, despite the older one-slot overview above.
-
-Maintenance scripts use the installed Firebase CLI's authenticated REST client.
-Run `firebase login` under the same OS account as the scheduled task, using a
-project-authorized booking master. Scripts check the protected master grant before
-access, allow only slot collections, and use transactions for creates/deletes.
-They no longer rely on anonymous database writes or `firebase-config.js`.
-Set `FIREBASE_CLI_DIRECTORY` to the CLI's `lib` directory outside the default
-Windows global npm location. Keep the CLI version stable and rerun maintenance
-tests after upgrades because this integration uses its internal client API.
-
-Production connection settings live in ignored `web/.env.production.local`.
-Development remains in local-preview mode unless separately configured.
-Public CMS queries use a one-minute clock margin and refresh every minute, so
-scheduled publication can appear approximately one to two minutes after its time.
-Ignored `.deployment-backups/` contains sensitive pre-migration data and recovery
-records. Keep it private; never restore the old unrestricted rule as a rollback.
-
-Practice availability is read-only. If current rules require authentication, the
-homepage links visitors to the booking app instead of widening database access.
-No new booking writes, user-role mutations, Storage, payments or uploads are added.
-
-### Rules Import and MCC Sources
-
-```powershell
-npm run import:rules
-npm test
-npm run verify:mcc
-```
-
-On Windows networks where Node HTTPS requests are reset, run
-`.\scripts\verify-mcc.ps1` instead. It uses Windows networking and checks all
-43 official destinations, including the Preamble, before recording success.
-
-The import converts the three original CAP HTML files into
-`web/src/data/imported-rules.json`, preserving their text, headings, lists, tables
-and callouts. It never writes to Firebase and never moves/deletes the originals.
-An authorized administrator can use **Import 2026 drafts** under **League rules**
-to create missing draft documents. Existing documents are skipped, not overwritten.
-Review the adopted MCC edition, vague ICC references, team names, dates and fees
-before publishing. Imports do not automatically create league listings; create
-the matching league and set its rules-document slug in the CMS.
-
-MCC text and media are not republished. The link-check script discovers official
-per-Law destinations and verifies them before generating a local URL manifest.
-If it cannot complete, the site uses the verified official MCC index rather than
-guessing per-Law URLs. MCC's downloads include the 2017 Code, 4th Edition 2026;
-confirm its effective date and the version CAP actually adopts before attributing
-an edition to the summaries. Do not equate a website's copyright year with its
-Law edition. The summaries need a cricket-knowledgeable editorial review before
-public launch.
-
-### Verification and Deployment Gates
-
-```powershell
-npm test
-npm run build
-npm run test:browser
-npm run test:rules
-```
-
-Browser tests expect the dev server on port 5174 and Microsoft Edge installed.
-They check desktop/mobile layouts, canvas pixels and movement, Laws navigation,
-CMS CRUD/persistence and print output. Screenshots and PDF output go to the ignored
-`web/test-results/` directory. Rules tests need Firebase CLI and a supported Java
-runtime on PATH, and use only the `demo-cap-website` emulator project. For full
-emulator UI testing, set `VITE_USE_EMULATORS=true` and a demo-project web config;
-start Auth and Firestore emulators using `web/firebase.emulators.json`.
-
-For production, create the second Hosting site in the Firebase Console, add its
-domain to Auth authorized domains, and bind `main` to its actual site ID. Run
-these commands **from `web/`**, only after live rules/indexes and admin grants have
-been reviewed and configured:
-
-```powershell
-firebase target:apply hosting main YOUR_NEW_SITE_ID --project cap-practice-booking
-npm run build
-firebase deploy --only hosting:main --project cap-practice-booking
-```
-
-The `main` target is bound to `cricket-peoria`. Run
-`node scripts/verify-live.mjs` from `web/` to verify published queries, anonymous
-access denial, the approved administrator grant, Google provider settings, and
-index readiness. Complete the real Google popup sign-in manually in the browser;
-Firebase CLI OAuth credentials cannot substitute for website OAuth credentials.
-`launch-live.mjs` is a guarded, one-time migration, not a routine deployment command.
-
-`web/firebase.json` contains only the new Hosting target; the root hosting config
-and `build/` stay untouched. Do not run a blanket `firebase deploy`. Set a real
-contact email and practice URL in Site settings, publish reviewed content, and
-smoke-test published/draft/scheduled visibility with signed-out users, captains,
-and admins. Add a reciprocal link in the practice app after the new public URL is
-known. A custom domain, Lighthouse performance/accessibility audit, live Firebase
-role tests, and independent editorial/model review remain release gates rather
-than implied completed work.
