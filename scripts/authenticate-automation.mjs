@@ -15,7 +15,26 @@ function decode(value) {
   throw new Error('Unsupported field type in slot data.');
 }
 
+function serviceAccountClient(token) {
+  return {
+    async post(path, body) {
+      const response = await fetch(`https://firestore.googleapis.com/v1${path}`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(`Firestore request failed (${response.status}): ${payload.error?.message || response.statusText}`);
+      return { body: payload };
+    },
+  };
+}
+
 export async function maintenanceDatabase() {
+  // CI path: access is governed by the service account's IAM role instead of a booking_roles grant.
+  const token = process.env.GOOGLE_OAUTH_ACCESS_TOKEN;
+  if (token) return { client: serviceAccountClient(token), terminate: async () => {} };
+
   const clients = await liveClients();
   const response = await clients.identity.post(`/projects/${project}/accounts:lookup`, { email: [clients.email] }, privateRequest);
   const user = response.body.users?.find((entry) => entry.email === clients.email && entry.emailVerified && !entry.disabled);

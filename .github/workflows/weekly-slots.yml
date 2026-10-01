@@ -1,0 +1,63 @@
+name: Weekly slot generation
+
+on:
+  schedule:
+    # Ground: Saturday 8:00 AM Central (7:00 AM during CST — GitHub cron is UTC-only)
+    - cron: '0 13 * * 6'
+    # Cages: Sunday 8:00 PM Central (7:00 PM during CST)
+    - cron: '0 1 * * 1'
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Which slots to regenerate
+        type: choice
+        options: [both, ground, cages]
+        default: both
+
+permissions:
+  contents: read
+
+concurrency:
+  group: slot-generation
+  cancel-in-progress: false
+
+env:
+  # The scripts compute "next Monday" from local time, so it must be Central, not UTC.
+  TZ: America/Chicago
+
+jobs:
+  ground:
+    if: github.event.schedule == '0 13 * * 6' || (github.event_name == 'workflow_dispatch' && inputs.target != 'cages')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+          token_format: access_token
+      - name: Create next week's ground slots
+        run: node CreateSlots.js
+        env:
+          GOOGLE_OAUTH_ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
+
+  cages:
+    if: github.event.schedule == '0 1 * * 1' || (github.event_name == 'workflow_dispatch' && inputs.target != 'ground')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+          token_format: access_token
+      - name: Create next week's cage slots
+        run: node CreateCageSlots.js
+        env:
+          GOOGLE_OAUTH_ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
