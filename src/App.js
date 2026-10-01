@@ -5,12 +5,37 @@ import { getDoc } from "firebase/firestore";
 import SlotCard from "./components/SlotCard";
 import CageSlotCard from "./components/CageSlotCard";
 import TeamModal from "./components/TeamModal";
+import DateBlock, { isTodayDate } from "./components/DateBlock";
+import { ClockIcon } from "./components/Icons";
 import { TEAM_GROUPS, DEFAULT_TEAMS, teamDocId, groupTeams } from "./teams";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { setDoc } from "firebase/firestore";
 import "./App.css"; // Importing styles for the enhanced layout
 // import { sendEmail } from "./emailService";
+
+const groupByDate = (items) => Object.entries(items.reduce((groups, item) => {
+  (groups[item.date] = groups[item.date] || []).push(item);
+  return groups;
+}, {}));
+
+const shortDate = (date) => {
+  const [y, m, d] = date.split("-");
+  return new Date(y, m - 1, d).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+};
+
+const NewsTicker = () => (
+  <div className="news-ticker">
+    <span className="news-ticker-label">News</span>
+    <div className="news-ticker-track">
+      <span>
+        Powerplay Divas win the CAP Women's League 2026 &nbsp;·&nbsp;
+        CAP T20 Fall Tournament starts Aug 29 — book your practice slots &nbsp;·&nbsp;
+        Practice ground bookings are now open for the season &nbsp;·&nbsp;
+      </span>
+    </div>
+  </div>
+);
 
 function App() {
  const [slots, setSlots] = useState([]);
@@ -556,53 +581,38 @@ const [newTeamGroup, setNewTeamGroup] = useState(TEAM_GROUPS[0].label);
      <div className="app-container login-page">
        <header className="app-header">
          <img src={`${process.env.PUBLIC_URL}/logo.png`} alt="CAP Logo" className="app-logo" />
-         <div>
-           <h1>Cricket Association of Peoria</h1>
-           <p>Welcome to the CAP Ground Booking System</p>
+         <div className="app-title">
+           <span className="app-kicker">Cricket Association of Peoria</span>
+           <h1>Practice Booking</h1>
          </div>
        </header>
 
-       {/* Scrolling news ticker */}
-       <div className="news-ticker">
-         <span className="news-ticker-label">📰 NEWS</span>
-         <div className="news-ticker-track">
-           <span>
-             🏆 Powerplay Divas win the CAP Women's League 2026! &nbsp;•&nbsp;
-             🏏 CAP T20 Fall Tournament starts Aug 29 — book your practice slots! &nbsp;•&nbsp;
-             🏏 Practice ground bookings are now open for the season &nbsp;•&nbsp;
-           </span>
-         </div>
-       </div>
+       <NewsTicker />
 
        <div className="login-news-layout">
-         {/* Login card */}
-         <div className="login-card">
-           <h2>Login</h2>
-           <p className="login-subtitle">Sign in to book practice slots</p>
+         <section className="login-card">
+           <span className="eyebrow">Captains</span>
+           <h2>Book ground and cage practice for your team.</h2>
+           <p className="login-subtitle">Sign in with the Google account linked to your captain role. Next week's slots open every weekend.</p>
            <button className="google-login-btn" onClick={handleGoogleLogin}>
-             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="google-icon" />
-             Login with Google
+             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="" className="google-icon" />
+             Continue with Google
            </button>
-         </div>
+         </section>
 
-         {/* News cards */}
-         <div className="news-section">
-           <h3 className="news-section-title">⚡ Latest News</h3>
-           <div className="news-card news-card-champion">
-             <div className="news-card-body">
-               <span className="news-badge">🏆 Champions</span>
-               <h4>Powerplay Divas Win the CAP Women's League 2026!</h4>
-               <p>Congratulations to Powerplay Divas on clinching the CAP Women's League title. A fantastic season from all the teams!</p>
-             </div>
-           </div>
-           <div className="news-card">
-             <div className="news-card-body">
-               <span className="news-badge news-badge-upcoming">📅 Upcoming</span>
-               <h4>CAP T20 Fall Tournament Starts Aug 29</h4>
-               <p>The CAP T20 Fall Tournament 2026 kicks off August 29th. Captains — book your practice slots now!</p>
-             </div>
-           </div>
-         </div>
+         <section className="news-section">
+           <h3 className="news-section-title">Latest news</h3>
+           <article className="news-item">
+             <span className="flag flag-amber">Champions</span>
+             <h4>Powerplay Divas win the CAP Women's League 2026</h4>
+             <p>Congratulations to Powerplay Divas on clinching the CAP Women's League title. A fantastic season from all the teams.</p>
+           </article>
+           <article className="news-item">
+             <span className="flag">Upcoming</span>
+             <h4>CAP T20 Fall Tournament starts Aug 29</h4>
+             <p>The CAP T20 Fall Tournament 2026 kicks off August 29th. Captains, book your practice slots now.</p>
+           </article>
+         </section>
        </div>
      </div>
    );
@@ -728,14 +738,14 @@ const [newTeamGroup, setNewTeamGroup] = useState(TEAM_GROUPS[0].label);
 
      <header className="app-header">
        <img src={`${process.env.PUBLIC_URL}/logo.png`} alt="CAP Logo" className="app-logo" />
-       <div>
-         <h1>Cricket Association of Peoria</h1>
-         <p>Manage your ground bookings with ease</p>
+       <div className="app-title">
+         <span className="app-kicker">Cricket Association of Peoria</span>
+         <h1>Practice Booking</h1>
        </div>
        <div className="user-info">
          <div className="user-meta">
            <span className="user-name">{user.displayName || user.email}</span>
-           <span className={`role-badge role-${userRole}`}>{userRole}</span>
+           <span className={`flag role-${userRole}`}>{userRole}</span>
          </div>
          <div className="user-actions">
            {userRole === "master" && (
@@ -749,46 +759,41 @@ const [newTeamGroup, setNewTeamGroup] = useState(TEAM_GROUPS[0].label);
        </div>
      </header>
 
-     {/* Scrolling news ticker */}
-     <div className="news-ticker">
-       <span className="news-ticker-label">📰 NEWS</span>
-       <div className="news-ticker-track">
-         <span>
-           🏆 Powerplay Divas win the CAP Women's League 2026! &nbsp;•&nbsp;
-           🏏 CAP T20 Fall Tournament starts Aug 29 — book your practice slots! &nbsp;•&nbsp;
-           🏏 Practice ground bookings are now open for the season &nbsp;•&nbsp;
-         </span>
-       </div>
-     </div>
+     <NewsTicker />
 
-     <div className="tab-bar">
+     <div className="tab-bar" role="tablist">
        <button
+         role="tab"
+         aria-selected={activeTab === "grounds"}
          className={`tab-button ${activeTab === "grounds" ? "active" : ""}`}
          onClick={() => setActiveTab("grounds")}
        >
-         🏟️ Ground Booking
+         Ground booking
        </button>
        <button
+         role="tab"
+         aria-selected={activeTab === "cages"}
          className={`tab-button ${activeTab === "cages" ? "active" : ""}`}
          onClick={() => setActiveTab("cages")}
        >
-         🏏 Batting Cages
+         Batting cages
        </button>
      </div>
      {activeTab === "grounds" && (
      <div className="booking-section">
-       <h2>CAP Ground Booking</h2>
+       <div className="section-head">
+         <h2>Ground practice</h2>
+         <p>Up to two teams share each evening slot. One slot per team each week.</p>
+       </div>
        {/* My Booking summary */}
        {user && (() => {
          const mySlot = slots.find(s => (s.booked_by_teams || []).some(e => e.uid === user.uid));
          if (!mySlot) return null;
          const myEntry = mySlot.booked_by_teams.find(e => e.uid === user.uid);
-         const [y, m, d] = mySlot.date.split('-');
-         const dateStr = new Date(y, m - 1, d).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
          return (
            <div className="my-booking-card">
-             <h4>Your Booking</h4>
-             <p>🏏 {myEntry.team} — {dateStr}, {mySlot.time} @ {mySlot.ground}</p>
+             <span className="flag">Your booking</span>
+             <p><strong>{myEntry.team}</strong> · {shortDate(mySlot.date)}, {mySlot.time} at {mySlot.ground}</p>
            </div>
          );
        })()}
@@ -798,19 +803,26 @@ const [newTeamGroup, setNewTeamGroup] = useState(TEAM_GROUPS[0].label);
            <p>Loading slots...</p>
          </div>
        ) : slots.length === 0 ? (
-         <p className="empty-state">No slots available this week. Check back soon!</p>
+         <p className="empty-state">No slots open right now. Next week's slots are added every Saturday morning.</p>
        ) : (
-         slots.map(slot => (
-           <SlotCard
-             key={`${slot.id}-${slot.ground}`}
-             slot={slot}
-             onBook={() => setSelectedSlot(slot)}
-             onCancel={handleCancelBooking}
-             onReserve={handleReserveSlot}
-             onUnreserve={handleUnreserveSlot}
-             user={user}
-             userRole={userRole}
-           />
+         groupByDate(slots).map(([date, daySlots]) => (
+           <section key={date} className={`day-row${isTodayDate(date) ? " is-today" : ""}`}>
+             <DateBlock date={date} />
+             <div className="day-slots">
+               {daySlots.map(slot => (
+                 <SlotCard
+                   key={`${slot.id}-${slot.ground}`}
+                   slot={slot}
+                   onBook={() => setSelectedSlot(slot)}
+                   onCancel={handleCancelBooking}
+                   onReserve={handleReserveSlot}
+                   onUnreserve={handleUnreserveSlot}
+                   user={user}
+                   userRole={userRole}
+                 />
+               ))}
+             </div>
+           </section>
          ))
        )}
        {selectedSlot && (userRole === "captain" || userRole === "master") && (
@@ -825,53 +837,39 @@ const [newTeamGroup, setNewTeamGroup] = useState(TEAM_GROUPS[0].label);
      {activeTab === "cages" && (
     <div className="booking-section">
        <div>
-       <h2>Batting Cage Booking</h2>
+       <div className="section-head">
+         <h2>Batting cages</h2>
+         <p>One team per cage per session. One weekday and one weekend session per team.</p>
+       </div>
        {/* My Booking summary */}
        {user && (() => {
          const mySlots = cageSlots.filter(s => s.booked_by && s.booked_by.uid === user.uid);
          if (mySlots.length === 0) return null;
          return (
            <div className="my-booking-card">
-             <h4>Your Booking{mySlots.length > 1 ? "s" : ""}</h4>
-             {mySlots.map(s => {
-               const [y, m, d] = s.date.split('-');
-               const dateStr = new Date(y, m - 1, d).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
-               return <p key={s.id}>🏏 {s.booked_by.team} — {dateStr}, {s.time} @ {s.cage}</p>;
-             })}
+             <span className="flag">Your booking{mySlots.length > 1 ? "s" : ""}</span>
+             {mySlots.map(s => (
+               <p key={s.id}><strong>{s.booked_by.team}</strong> · {shortDate(s.date)}, {s.time} at {s.cage}</p>
+             ))}
            </div>
          );
        })()}
-       {(() => {
-         // Group cage slots by date, then by time
-         const grouped = {};
-         cageSlots.forEach(slot => {
-           const key = slot.date;
-           if (!grouped[key]) grouped[key] = {};
-           if (!grouped[key][slot.time]) grouped[key][slot.time] = [];
-           grouped[key][slot.time].push(slot);
+       {!loading && cageSlots.length === 0 && (
+         <p className="empty-state">No cage sessions open right now. Next week's sessions are added every Sunday evening.</p>
+       )}
+       {groupByDate(cageSlots).map(([date, daySlots]) => {
+         // Group the day's cage slots by time
+         const times = {};
+         daySlots.forEach(slot => {
+           (times[slot.time] = times[slot.time] || []).push(slot);
          });
-         return Object.entries(grouped).map(([date, times]) => {
-           const [y, m, d] = date.split('-');
-           const slotDate = new Date(y, m - 1, d);
-           const formattedDate = slotDate.toLocaleDateString("en-US", {
-             weekday: "long",
-             month: "short",
-             day: "numeric",
-           });
-           const today = new Date();
-           today.setHours(0, 0, 0, 0);
-           const isToday = slotDate.getTime() === today.getTime();
-           const isWeekend = Object.values(times).flat()[0]?.is_weekend;
-           return (
-             <div key={date} className={`cage-date-group${isToday ? ' slot-today' : ''}`}>
-               <div className="cage-date-header">
-                 📅 {formattedDate}
-                 {isToday && <span className="slot-today-badge">Today</span>}
-                 {isWeekend && <span className="weekend-badge">Weekend</span>}
-               </div>
+         return (
+           <section key={date} className={`day-row${isTodayDate(date) ? " is-today" : ""}`}>
+             <DateBlock date={date} isWeekend={daySlots[0]?.is_weekend} />
+             <div className="day-slots">
                {Object.entries(times).map(([time, slots]) => (
                  <div key={time} className="cage-time-row">
-                   <div className="cage-time-label">🕐 {time}</div>
+                   <div className="cage-time-label"><ClockIcon /> {time}</div>
                    <div className="cage-grid">
                      {slots.map(slot => (
                        <CageSlotCard
@@ -887,9 +885,9 @@ const [newTeamGroup, setNewTeamGroup] = useState(TEAM_GROUPS[0].label);
                  </div>
                ))}
              </div>
-           );
-         });
-       })()}
+           </section>
+         );
+       })}
        {selectedCageSlot && (userRole === "captain" || userRole === "master") && (
          <TeamModal
            onConfirm={handleCageBooking}

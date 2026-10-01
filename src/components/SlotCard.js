@@ -1,22 +1,9 @@
-import React from "react";
-import "./SlotCard.css"; // Ensure the CSS file is imported
+import "./SlotCard.css";
+import { ClockIcon, AlertIcon } from "./Icons";
+
+const MAX_TEAMS = 2;
 
 function SlotCard({ slot, onBook, onCancel, onReserve, onUnreserve, user, userRole }) {
-  // Format the date (parse as local to avoid timezone shift)
-  const [y, m, d] = slot.date.split('-');
-  const slotDate = new Date(y, m - 1, d);
-  const formattedDate = slotDate.toLocaleDateString("en-US", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-
-  // Check if slot is today
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const isToday = slotDate.getTime() === today.getTime();
-
   // Ensure booked_by_teams contains only valid entries
   const bookedTeams = (slot.booked_by_teams || []).filter(
     (team) => team && team.uid && team.name && team.team
@@ -26,66 +13,69 @@ function SlotCard({ slot, onBook, onCancel, onReserve, onUnreserve, user, userRo
     (entry) => entry.uid === user.uid
   );
 
+  const isMaster = userRole === "master";
+  const canBook = (!isBookedByUser || isMaster) && slot.booked_by_teams.length < MAX_TEAMS;
+  const openCount = MAX_TEAMS - bookedTeams.length;
+  // Notes are stored with a leading emoji and "Note:" prefix
+  const note = slot.note ? slot.note.replace(/^\W+/, "").replace(/^Note:\s*/i, "") : "";
+
   return (
-    <div className={`slot-card${isToday ? ' slot-today' : ''}`}>
-      <p>📅 {formattedDate}{isToday && <span className="slot-today-badge">Today</span>}</p>
-      <p>🕐 {slot.time}</p>
-      <p>🏟️ {slot.ground}</p>
-      {slot.note && (
-        <p style={{ color: "#e67e22", fontWeight: "bold", fontSize: "0.9em" }}>
-          📝 {slot.note}
-        </p>
+    <article className={`slot-card${slot.reserved ? " is-reserved" : ""}`}>
+      <div className="slot-main">
+        <h3 className="slot-ground">{slot.ground}</h3>
+        <p className="slot-meta"><ClockIcon /> {slot.time}</p>
+        {note && <p className="slot-note"><AlertIcon /> {note}</p>}
+      </div>
+
+      <div className="slot-status">
+        {slot.reserved ? (
+          <>
+            <span className="flag flag-red">Reserved</span>
+            <span className="slot-sub">Game day{slot.reserved_by ? `, by ${slot.reserved_by}` : ""}</span>
+          </>
+        ) : (
+          <>
+            <span className="capacity" role="img" aria-label={`${bookedTeams.length} of ${MAX_TEAMS} teams booked`}>
+              {Array.from({ length: MAX_TEAMS }, (_, i) => (
+                <span key={i} className={i < bookedTeams.length ? "filled" : ""} />
+              ))}
+            </span>
+            <span className="slot-sub">{openCount === 0 ? "Full" : `${openCount} spot${openCount > 1 ? "s" : ""} open`}</span>
+          </>
+        )}
+      </div>
+
+      <div className="slot-actions">
+        {slot.reserved ? (
+          isMaster && (
+            <button className="btn btn-outline" onClick={() => onUnreserve(slot.id)}>Unreserve</button>
+          )
+        ) : (
+          <>
+            {canBook && (
+              <button className="btn btn-primary" onClick={() => onBook(slot)}>Book slot</button>
+            )}
+            {isMaster && (
+              <button className="btn btn-outline" onClick={() => onReserve(slot.id)}>Reserve for game</button>
+            )}
+          </>
+        )}
+      </div>
+
+      {!slot.reserved && bookedTeams.length > 0 && (
+        <ul className="slot-teams">
+          {bookedTeams.map((team, index) => (
+            <li key={index}>
+              <span className="slot-team-name">{team.team}</span>
+              <span className="slot-sub">booked by {team.name}</span>
+              {user && (user.uid === team.uid || isMaster) && (
+                <button className="btn-text-danger" onClick={() => onCancel(slot.id, team.team)}>Cancel</button>
+              )}
+            </li>
+          ))}
+        </ul>
       )}
-      {slot.reserved ? (
-        <div>
-          <p style={{ color: "#dc3545", fontWeight: "bold" }}>Reserved for Game Day</p>
-          {slot.reserved_by && <p>Reserved by: {slot.reserved_by}</p>}
-          {userRole === "master" && (
-            <button className="cancel-button" onClick={() => onUnreserve(slot.id)}>
-              Unreserve
-            </button>
-          )}
-        </div>
-      ) : (
-        <>
-          {bookedTeams.length > 0 ? (
-            <div>
-              <p><strong>Booked By:</strong></p>
-              <ul>
-                {bookedTeams.map((team, index) => (
-                  <li key={index}>
-                    Team: {team.team}, Booked by: {team.name}
-                    {user && (user.uid === team.uid || userRole === "master") && (
-                      <button
-                        className="cancel-button"
-                        onClick={() => onCancel(slot.id, team.team)}
-                      >
-                        Cancel
-                      </button>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ) : (
-            <p>No teams have booked this slot yet.</p>
-          )}
-          {((!isBookedByUser && slot.booked_by_teams.length < 2) || (userRole === "master" && slot.booked_by_teams.length < 2)) && (
-            <button onClick={() => onBook(slot)} className="book-button">
-              Book Slot
-            </button>
-          )}
-          {userRole === "master" && !slot.reserved && (
-            <button
-              className="reserve-button"
-              onClick={() => onReserve(slot.id)}
-            >
-              Reserve for Game
-            </button>
-          )}
-        </>
-      )}
-    </div>
+    </article>
   );
 }
 

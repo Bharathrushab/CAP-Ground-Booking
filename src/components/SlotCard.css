@@ -1,155 +1,131 @@
+/* ── Ground slot rows ── */
 .slot-card {
-  border: 1px solid #e0e0e0;
-  border-radius: 12px;
-  padding: 20px;
-  margin: 12px 0;
-  background-color: #ffffff;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s, box-shadow 0.2s;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 128px 244px;
+  grid-template-areas:
+    "main status actions"
+    "teams teams teams";
+  align-items: center;
+  column-gap: 24px;
+  padding: 14px 0;
 }
 
-.slot-card.slot-today {
-  border-left: 4px solid #007bff;
-  background: linear-gradient(135deg, #f0f7ff 0%, #ffffff 100%);
+.slot-card + .slot-card {
+  border-top: 1px dashed var(--border);
 }
 
-.slot-today-badge {
-  display: inline-block;
-  background: #007bff;
-  color: #fff;
-  font-size: 0.68rem;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 10px;
-  margin-left: 8px;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
+.slot-main {
+  grid-area: main;
+  min-width: 0;
 }
 
-.weekend-badge {
-  display: inline-block;
-  background-color: #ffc107;
-  color: #333;
-  font-size: 11px;
+.slot-ground {
+  margin: 0 0 4px;
+  font-size: 16px;
   font-weight: 600;
-  padding: 2px 8px;
-  border-radius: 4px;
-  margin-bottom: 8px;
+  color: var(--ink);
 }
 
-.slot-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+.slot-card.is-reserved .slot-ground {
+  color: var(--muted);
 }
 
-.slot-card-box {
+.slot-meta,
+.slot-note {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-  font-family: 'Arial', sans-serif;
-  color: #333;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
 }
 
-.slot-date {
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #007bff;
-}
-
-.slot-time {
-  font-size: 1rem;
-  color: #28a745;
+.slot-note {
+  margin-top: 6px;
+  color: var(--amber-ink);
+  font-weight: 500;
 }
 
 .slot-status {
-  font-size: 0.9rem;
-  color: #6c757d;
-}
-
-.book-button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 8px 0;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  width: 100%;
-  margin-top: 10px;
-  transition: background-color 0.2s;
-}
-
-.book-button:hover {
-  background-color: #0056b3;
-}
-
-.cancel-button {
-  background-color: transparent;
-  color: #dc3545;
-  border: 1px solid #dc3545;
-  padding: 4px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 12px;
-  margin-left: 10px;
-  transition: background-color 0.2s, color 0.2s;
-}
-
-.cancel-button:hover {
-  background-color: #dc3545;
-  color: white;
-}
-
-.reserve-button {
-  background-color: #ffc107;
-  color: #333;
-  border: none;
-  padding: 8px 0;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  width: 100%;
-  margin-top: 8px;
-  transition: background-color 0.2s;
-}
-
-.reserve-button:hover {
-  background-color: #e0a800;
-}
-
-/* Cage grouped layout */
-.cage-date-group {
-  border: 1px solid #e0e0e0;
-  border-radius: 12px;
-  padding: 16px;
-  margin: 12px 0;
-  background-color: #ffffff;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-}
-
-.cage-date-group.slot-today {
-  border-left: 4px solid #007bff;
-  background: linear-gradient(135deg, #f0f7ff 0%, #ffffff 100%);
-}
-
-.cage-date-header {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #1a1a1a;
-  margin-bottom: 12px;
+  grid-area: status;
   display: flex;
-  align-items: center;
-  gap: 10px;
+  flex-direction: column;
+  gap: 6px;
 }
 
+.capacity {
+  display: flex;
+  gap: 4px;
+}
+
+.capacity span {
+  flex: 1;
+  height: 6px;
+  background: var(--border);
+}
+
+.capacity span.filled {
+  background: var(--green);
+}
+
+.slot-sub {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.slot-actions {
+  grid-area: actions;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.slot-teams {
+  grid-area: teams;
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  border-left: 3px solid var(--green);
+}
+
+.slot-teams li {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  padding: 4px 0 4px 12px;
+  font-size: 14px;
+}
+
+.slot-team-name {
+  font-weight: 600;
+}
+
+.slot-teams .btn-text-danger {
+  margin-left: auto;
+}
+
+/* ── Cage sessions ── */
 .cage-time-row {
-  margin-bottom: 10px;
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+  padding: 10px 0;
+}
+
+.cage-time-row + .cage-time-row {
+  border-top: 1px dashed var(--border);
 }
 
 .cage-time-label {
-  font-size: 0.9rem;
-  color: #555;
-  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
 }
 
 .cage-grid {
@@ -159,45 +135,81 @@
 }
 
 .cage-card {
-  border: 1px solid #e8e8e8;
-  border-radius: 8px;
-  padding: 12px;
-  background-color: #fafafa;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 6px;
+  min-height: 82px;
+  padding: 10px 12px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+}
+
+.cage-card.is-booked {
+  background: var(--green-soft);
+  border-color: var(--green-soft);
+}
+
+.cage-card.is-mine {
+  border-left: 3px solid var(--green);
 }
 
 .cage-name {
-  font-weight: 600;
-  font-size: 0.95rem;
-  color: #333;
-  margin-bottom: 6px;
-}
-
-.cage-available {
-  color: #28a745;
-  font-size: 0.85rem;
-  margin: 4px 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
 }
 
 .cage-booked-info {
+  margin: 0;
+  font-size: 14px;
   font-weight: 600;
-  color: #333;
-  font-size: 0.85rem;
-  margin: 2px 0;
+  color: var(--ink);
+  overflow-wrap: anywhere;
 }
 
 .cage-booked-by {
-  color: #888;
-  font-size: 0.8rem;
-  margin: 0 0 6px 0;
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
 }
 
-.cage-card .book-button {
-  padding: 6px 0;
-  font-size: 13px;
+.cage-card .btn-text-danger {
+  align-self: flex-start;
 }
 
-.cage-card .cancel-button {
-  margin-left: 0;
-  margin-top: 4px;
+@media (max-width: 640px) {
+  .slot-card {
+    grid-template-columns: minmax(0, 1fr) 96px;
+    grid-template-areas:
+      "main status"
+      "actions actions"
+      "teams teams";
+    row-gap: 12px;
+    column-gap: 16px;
+  }
+
+  .slot-actions {
+    justify-content: stretch;
+  }
+
+  .slot-actions:empty {
+    display: none;
+  }
+
+  .slot-actions .btn {
+    flex: 1;
+  }
+
+  .slot-teams {
+    margin-top: 0;
+  }
+
+  .cage-time-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
 }
