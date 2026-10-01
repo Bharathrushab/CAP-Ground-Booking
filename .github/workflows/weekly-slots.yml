@@ -58,6 +58,8 @@ jobs:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
           token_format: access_token
       - name: Create next week's cage slots
+        run: node CreateCageSlots.js
+        env:
           GOOGLE_OAUTH_ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
 
   # GitHub pauses schedules after 60 days without commits; re-enabling resets that timer.
