@@ -6,7 +6,7 @@ import SlotCard from "./components/SlotCard";
 import CageSlotCard from "./components/CageSlotCard";
 import TeamModal from "./components/TeamModal";
 import DateBlock, { isTodayDate } from "./components/DateBlock";
-import { ClockIcon } from "./components/Icons";
+import { ClockIcon, CheckIcon } from "./components/Icons";
 import { TEAM_GROUPS, DEFAULT_TEAMS, teamDocId, groupTeams } from "./teams";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
@@ -791,10 +791,9 @@ const [newTeamGroup, setNewTeamGroup] = useState(TEAM_GROUPS[0].label);
          if (!mySlot) return null;
          const myEntry = mySlot.booked_by_teams.find(e => e.uid === user.uid);
          return (
-           <div className="my-booking-card">
-             <span className="flag">Your booking</span>
-             <p><strong>{myEntry.team}</strong> · {shortDate(mySlot.date)}, {mySlot.time} at {mySlot.ground}</p>
-           </div>
+           <p className="my-booking">
+             <CheckIcon /> You're booked: <strong>{myEntry.team}</strong>, {shortDate(mySlot.date)}, {mySlot.time} at {mySlot.ground}.
+           </p>
          );
        })()}
        {loading ? (
@@ -845,14 +844,11 @@ const [newTeamGroup, setNewTeamGroup] = useState(TEAM_GROUPS[0].label);
        {user && (() => {
          const mySlots = cageSlots.filter(s => s.booked_by && s.booked_by.uid === user.uid);
          if (mySlots.length === 0) return null;
-         return (
-           <div className="my-booking-card">
-             <span className="flag">Your booking{mySlots.length > 1 ? "s" : ""}</span>
-             {mySlots.map(s => (
-               <p key={s.id}><strong>{s.booked_by.team}</strong> · {shortDate(s.date)}, {s.time} at {s.cage}</p>
-             ))}
-           </div>
-         );
+         return mySlots.map(s => (
+           <p key={s.id} className="my-booking">
+             <CheckIcon /> You're booked: <strong>{s.booked_by.team}</strong>, {shortDate(s.date)}, {s.time} at {s.cage}.
+           </p>
+         ));
        })()}
        {!loading && cageSlots.length === 0 && (
          <p className="empty-state">No cage sessions open right now. Next week's sessions are added every Sunday evening.</p>

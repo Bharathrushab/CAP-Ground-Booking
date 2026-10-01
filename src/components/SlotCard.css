@@ -1,11 +1,9 @@
 /* ── Ground slot rows ── */
 .slot-card {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 128px 244px;
-  grid-template-areas:
-    "main status actions"
-    "teams teams teams";
-  align-items: center;
+  grid-template-columns: minmax(0, 1fr) 150px 244px;
+  grid-template-areas: "main status actions";
+  align-items: start;
   column-gap: 24px;
   padding: 14px 0;
 }
@@ -51,6 +49,7 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
+  padding-top: 6px;
 }
 
 .capacity {
@@ -82,19 +81,17 @@
 }
 
 .slot-teams {
-  grid-area: teams;
   list-style: none;
-  margin: 12px 0 0;
+  margin: 10px 0 0;
   padding: 0;
-  border-left: 3px solid var(--green);
 }
 
 .slot-teams li {
   display: flex;
   align-items: baseline;
   flex-wrap: wrap;
-  gap: 4px 10px;
-  padding: 4px 0 4px 12px;
+  gap: 2px 8px;
+  padding: 2px 0;
   font-size: 14px;
 }
 
@@ -102,17 +99,17 @@
   font-weight: 600;
 }
 
-.slot-teams .btn-text-danger {
-  margin-left: auto;
+.slot-teams .slot-sub::before {
+  content: "· ";
 }
 
 /* ── Cage sessions ── */
 .cage-time-row {
   display: grid;
   grid-template-columns: 150px minmax(0, 1fr);
-  align-items: center;
+  align-items: start;
   gap: 16px;
-  padding: 10px 0;
+  padding: 8px 0;
 }
 
 .cage-time-row + .cage-time-row {
@@ -123,62 +120,63 @@
   display: flex;
   align-items: center;
   gap: 6px;
+  padding-top: 8px;
   font-size: 13px;
   font-weight: 600;
   color: var(--ink);
 }
 
 .cage-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-.cage-card {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 6px;
-  min-height: 82px;
-  padding: 10px 12px;
-  background: #fff;
-  border: 1px solid var(--border);
-  border-radius: 3px;
 }
 
-.cage-card.is-booked {
-  background: var(--green-soft);
-  border-color: var(--green-soft);
+.cage-row {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  min-height: 38px;
+  padding: 4px 0;
+  font-size: 14px;
 }
 
-.cage-card.is-mine {
-  border-left: 3px solid var(--green);
+.cage-row + .cage-row {
+  border-top: 1px dotted var(--border);
 }
 
 .cage-name {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-size: 13px;
   color: var(--muted);
 }
 
-.cage-booked-info {
-  margin: 0;
-  font-size: 14px;
+.cage-who {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 8px;
+  min-width: 0;
+}
+
+.cage-team {
   font-weight: 600;
-  color: var(--ink);
   overflow-wrap: anywhere;
 }
 
-.cage-booked-by {
-  margin: 0;
-  font-size: 12px;
+.cage-row.is-mine .cage-team {
+  color: var(--green);
+}
+
+.cage-who .slot-sub::before {
+  content: "· ";
+}
+
+.cage-open {
   color: var(--muted);
 }
 
-.cage-card .btn-text-danger {
-  align-self: flex-start;
+.cage-action {
+  justify-self: end;
 }
 
 @media (max-width: 640px) {
@@ -186,8 +184,7 @@
     grid-template-columns: minmax(0, 1fr) 96px;
     grid-template-areas:
       "main status"
-      "actions actions"
-      "teams teams";
+      "actions actions";
     row-gap: 12px;
     column-gap: 16px;
   }
@@ -204,12 +201,8 @@
     flex: 1;
   }
 
-  .slot-teams {
-    margin-top: 0;
-  }
-
   .cage-time-row {
     grid-template-columns: minmax(0, 1fr);
-    gap: 8px;
+    gap: 2px;
   }
 }

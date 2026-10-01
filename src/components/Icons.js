@@ -23,3 +23,9 @@ export const AlertIcon = () => (
     <path d="M8 11.5v.01" />
   </svg>
 );
+
+export const CheckIcon = () => (
+  <svg {...base}>
+    <path d="M3 8.5 6.5 12 13 4.5" />
+  </svg>
+);

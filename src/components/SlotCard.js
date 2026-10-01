@@ -25,6 +25,19 @@ function SlotCard({ slot, onBook, onCancel, onReserve, onUnreserve, user, userRo
         <h3 className="slot-ground">{slot.ground}</h3>
         <p className="slot-meta"><ClockIcon /> {slot.time}</p>
         {note && <p className="slot-note"><AlertIcon /> {note}</p>}
+        {!slot.reserved && bookedTeams.length > 0 && (
+          <ul className="slot-teams">
+            {bookedTeams.map((team, index) => (
+              <li key={index}>
+                <span className="slot-team-name">{team.team}</span>
+                <span className="slot-sub">{team.name}</span>
+                {user && (user.uid === team.uid || isMaster) && (
+                  <button className="btn-text-danger" onClick={() => onCancel(slot.id, team.team)}>Cancel</button>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       <div className="slot-status">
@@ -61,20 +74,6 @@ function SlotCard({ slot, onBook, onCancel, onReserve, onUnreserve, user, userRo
           </>
         )}
       </div>
-
-      {!slot.reserved && bookedTeams.length > 0 && (
-        <ul className="slot-teams">
-          {bookedTeams.map((team, index) => (
-            <li key={index}>
-              <span className="slot-team-name">{team.team}</span>
-              <span className="slot-sub">booked by {team.name}</span>
-              {user && (user.uid === team.uid || isMaster) && (
-                <button className="btn-text-danger" onClick={() => onCancel(slot.id, team.team)}>Cancel</button>
-              )}
-            </li>
-          ))}
-        </ul>
-      )}
     </article>
   );
 }

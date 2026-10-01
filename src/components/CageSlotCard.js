@@ -6,19 +6,25 @@ function CageSlotCard({ slot, onBook, onCancel, user, userRole }) {
   const isMaster = userRole === "master";
 
   return (
-    <div className={`cage-card${isBooked ? " is-booked" : ""}${isBookedByUser ? " is-mine" : ""}`}>
-      <div className="cage-name">{slot.cage}</div>
+    <div className={`cage-row${isBooked ? " is-booked" : ""}${isBookedByUser ? " is-mine" : ""}`}>
+      <span className="cage-name">{slot.cage}</span>
       {isBooked ? (
-        <>
-          <p className="cage-booked-info">{slot.booked_by.team}</p>
-          <p className="cage-booked-by">by {slot.booked_by.name}</p>
-          {(isBookedByUser || isMaster) && (
-            <button className="btn-text-danger" onClick={() => onCancel(slot.id)}>Cancel</button>
-          )}
-        </>
+        <span className="cage-who">
+          <span className="cage-team">{slot.booked_by.team}</span>
+          <span className="slot-sub">{slot.booked_by.name}</span>
+        </span>
       ) : (
-        <button onClick={() => onBook(slot)} className="btn btn-outline btn-block">Book</button>
+        <span className="cage-open">Open</span>
       )}
+      <span className="cage-action">
+        {isBooked ? (
+          (isBookedByUser || isMaster) && (
+            <button className="btn-text-danger" onClick={() => onCancel(slot.id)}>Cancel</button>
+          )
+        ) : (
+          <button onClick={() => onBook(slot)} className="btn btn-outline btn-small">Book</button>
+        )}
+      </span>
     </div>
   );
 }

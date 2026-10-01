@@ -190,8 +190,10 @@
   background: var(--green-soft);
 }
 
-.btn-block {
-  width: 100%;
+.btn-small {
+  min-height: 30px;
+  padding: 4px 14px;
+  font-size: 12px;
 }
 
 .btn-text-danger {
@@ -302,28 +304,21 @@
 }
 
 .section-head p {
-  max-width: 60ch;
+  max-width: 72ch;
   margin: 0;
   font-size: 13px;
   color: var(--muted);
 }
 
-.my-booking-card {
-  margin-bottom: 22px;
-  padding: 12px 16px;
-  background: var(--green-soft);
-  border-left: 3px solid var(--green);
-}
-
-.my-booking-card .flag {
-  padding-left: 0;
-  border-left: 0;
-  color: var(--green);
-}
-
-.my-booking-card p {
-  margin: 6px 0 0;
+.my-booking {
+  margin: 0 0 10px;
   font-size: 14px;
+}
+
+.my-booking .icon {
+  margin-right: 6px;
+  vertical-align: -2px;
+  color: var(--green);
 }
 
 /* ── Day rows: date column + that day's slots ── */
