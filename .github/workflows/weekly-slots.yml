@@ -2,10 +2,10 @@ name: Weekly slot generation
 
 on:
   schedule:
-    # Ground: Saturday 8:00 AM Central (7:00 AM during CST — GitHub cron is UTC-only)
-    - cron: '0 13 * * 6'
-    # Cages: Sunday 8:00 PM Central (7:00 PM during CST)
-    - cron: '0 1 * * 1'
+    # Ground: Saturday 8:17 AM Central (7:17 AM during CST — GitHub cron is UTC-only; off-the-hour to reduce queue delays)
+    - cron: '17 13 * * 6'
+    # Cages: Sunday 8:17 PM Central (7:17 PM during CST); scripts still target this week if GitHub delays it into Monday
+    - cron: '17 1 * * 1'
   workflow_dispatch:
     inputs:
       target:
@@ -27,7 +27,7 @@ env:
 
 jobs:
   ground:
-    if: github.event.schedule == '0 13 * * 6' || (github.event_name == 'workflow_dispatch' && inputs.target != 'cages')
+    if: github.event.schedule == '17 13 * * 6' || (github.event_name == 'workflow_dispatch' && inputs.target != 'cages')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -45,7 +45,7 @@ jobs:
           GOOGLE_OAUTH_ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
 
   cages:
-    if: github.event.schedule == '0 1 * * 1' || (github.event_name == 'workflow_dispatch' && inputs.target != 'ground')
+    if: github.event.schedule == '17 1 * * 1' || (github.event_name == 'workflow_dispatch' && inputs.target != 'ground')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

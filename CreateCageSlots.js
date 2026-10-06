@@ -5,40 +5,26 @@ const cages = ["Cage 1", "Cage 2"];
 const weekdayTimes = ["5:00-6:30 PM", "6:30-8:00 PM"];
 const weekendTimes = ["10:00 AM-12:00 PM", "12:00-2:00 PM", "2:00-4:00 PM", "4:00-6:00 PM", "6:00-8:00 PM"];
 
-function generateDates() {
-  const dates = [];
-  const today = new Date();
-  const dayOfWeek = today.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
-  const daysUntilNextMonday = dayOfWeek === 0 ? 1 : 8 - dayOfWeek;
+const ymd = (date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
-  // Generate next week Mon-Sun (7 days)
-  for (let i = 0; i < 7; i++) {
-    const date = new Date(today);
-    date.setDate(today.getDate() + daysUntilNextMonday + i);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const dateStr = `${year}-${month}-${day}`;
-    dates.push({
-      dateStr,
-      dayOfWeek: date.getDay(),
-    });
-  }
-  return dates;
+// Upcoming Monday, or today if it's Monday (covers a Sunday run that GitHub delays past midnight)
+function targetMonday() {
+  const date = new Date();
+  date.setHours(0, 0, 0, 0);
+  date.setDate(date.getDate() + (8 - date.getDay()) % 7);
+  return date;
 }
 
-async function deleteOldCageSlots() {
-  const today = new Date();
-  const lastWeekDate = new Date();
-  lastWeekDate.setDate(today.getDate() - 7);
-  const formattedDate = lastWeekDate.toISOString().split("T")[0];
+function generateDates(monday) {
+  return Array.from({ length: 7 }, (_, i) => {
+    const date = new Date(monday);
+    date.setDate(monday.getDate() + i);
+    return { dateStr: ymd(date), dayOfWeek: date.getDay() };
+  });
+}
 
-  const oldSlotsQuery = query(
-    collection(db, "cage_slots"),
-    where("date", "<", formattedDate)
-  );
-
-  const snapshot = await getDocs(oldSlotsQuery);
+async function deleteCageSlotsBefore(dateStr) {
+  const snapshot = await getDocs(query(collection(db, "cage_slots"), where("date", "<", dateStr)));
   for (const docSnap of snapshot.docs) {
     await deleteDoc(doc(db, "cage_slots", docSnap.id));
     console.log(`Deleted old cage slot: ${docSnap.id}`);
@@ -56,17 +42,14 @@ async function cageSlotExists(date, time, cage) {
   return !snapshot.empty;
 }
 
-async function deleteAllCageSlots() {
-  const snapshot = await getDocs(collection(db, "cage_slots"));
-  for (const docSnap of snapshot.docs) {
-    await deleteDoc(doc(db, "cage_slots", docSnap.id));
-    console.log(`Deleted cage slot: ${docSnap.id}`);
-  }
-}
-
 async function createCageSlots() {
-  await deleteAllCageSlots();
-  const dates = generateDates();
+  const monday = targetMonday();
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const daysAhead = Math.round((monday - today) / 86400000);
+  // Weekend/Monday runs clear the finished week; a mid-week manual run only clears past days
+  await deleteCageSlotsBefore(ymd(daysAhead <= 2 ? monday : today));
+  const dates = generateDates(monday);
 
   for (const { dateStr, dayOfWeek } of dates) {
     const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;

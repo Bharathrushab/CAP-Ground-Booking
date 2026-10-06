@@ -4,38 +4,51 @@ const db = await maintenanceDatabase();
 const times = [
  "5:00-7:30PM"
 ];
-// 📅 Generate slots for next week (Mon-Fri)
-function generateDates() {
- const dates = [];
- const today = new Date();
- const dayOfWeek = today.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
+const ymd = (date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
- // Calculate days until next Monday
- const daysUntilNextMonday = dayOfWeek === 0 ? 1 : 8 - dayOfWeek;
-
- // Generate Monday through Friday of next week
- for (let i = 0; i < 5; i++) {
-   const date = new Date(today);
-   date.setDate(today.getDate() + daysUntilNextMonday + i);
-   const year = date.getFullYear();
-   const month = String(date.getMonth() + 1).padStart(2, '0');
-   const day = String(date.getDate()).padStart(2, '0');
-   dates.push(`${year}-${month}-${day}`);
- }
- return dates;
+// Upcoming Monday, or today if it's Monday (covers a weekend run that GitHub delays past midnight)
+function targetMonday() {
+  const date = new Date();
+  date.setHours(0, 0, 0, 0);
+  date.setDate(date.getDate() + (8 - date.getDay()) % 7);
+  return date;
 }
-// Function to delete ALL existing slots
-async function deleteAllSlots() {
-  const snapshot = await getDocs(collection(db, "slots"));
+
+// 📅 Mon-Fri of the target week
+function generateDates(monday) {
+  return Array.from({ length: 5 }, (_, i) => {
+    const date = new Date(monday);
+    date.setDate(monday.getDate() + i);
+    return ymd(date);
+  });
+}
+
+async function deleteSlotsBefore(dateStr) {
+  const snapshot = await getDocs(query(collection(db, "slots"), where("date", "<", dateStr)));
   for (const docSnap of snapshot.docs) {
     await deleteDoc(doc(db, "slots", docSnap.id));
-    console.log(`Deleted slot: ${docSnap.id}`);
+    console.log(`Deleted old slot: ${docSnap.id}`);
   }
 }
-// Function to update slots for the next week
+
+async function slotExists(date, time, ground) {
+  const snapshot = await getDocs(query(
+    collection(db, "slots"),
+    where("date", "==", date),
+    where("time", "==", time),
+    where("ground", "==", ground)
+  ));
+  return !snapshot.empty;
+}
+
 async function updateNextWeekSlots() {
-  await deleteAllSlots(); // Delete ALL existing slots first
-  const dates = generateDates();
+  const monday = targetMonday();
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const daysAhead = Math.round((monday - today) / 86400000);
+  // Weekend/Monday runs clear the finished week; a mid-week manual run only clears past days
+  await deleteSlotsBefore(ymd(daysAhead <= 2 ? monday : today));
+  const dates = generateDates(monday);
   for (let i = 0; i < dates.length; i++) {
     const date = dates[i];
     const [y, m, d] = date.split('-');
@@ -43,6 +56,10 @@ async function updateNextWeekSlots() {
 
     for (const time of times) {
       for (const ground of ["CAP Ground", "Mossville"]) {
+        if (await slotExists(date, time, ground)) {
+          console.log(`Slot already exists: ${date} ${time} for ${ground}`);
+          continue;
+        }
         const note = (dayOfWeek === 5 && ground === "CAP Ground")
           ? "⚠️ Note: Practice begins at 5:30 PM due to mowing"
           : "";
