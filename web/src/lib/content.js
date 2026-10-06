@@ -9,6 +9,13 @@ export const resources = {
 
 export const emptyBody = { type: 'doc', content: [{ type: 'paragraph' }] };
 export const practiceUrl = 'https://cricket-peoria.web.app/practice-booking';
+const legacyPracticeHosts = new Set(['cap-practice-booking.web.app', 'cap-practice-booking.firebaseapp.com']);
+// The booking app moved under the main site; old saved links now 301-redirect, so link straight to the new home.
+export function bookingUrl(value) {
+  const url = safeUrl(value);
+  if (!url) return practiceUrl;
+  return legacyPracticeHosts.has(new URL(url).hostname) ? practiceUrl : url;
+}
 export const textBody = (text) => ({ type: 'doc', content: [{ type: 'paragraph', content: [{ type: 'text', text }] }] });
 
 export function safeUrl(value) {

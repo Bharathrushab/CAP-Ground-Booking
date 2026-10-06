@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { db } from "./firebase";
-import { collection, getDocs, doc, runTransaction, writeBatch, deleteDoc } from "firebase/firestore";
+import { collection, getDocs, doc, runTransaction, writeBatch, deleteDoc, query, where } from "firebase/firestore";
 import { getDoc } from "firebase/firestore";
 import SlotCard from "./components/SlotCard";
 import CageSlotCard from "./components/CageSlotCard";
@@ -24,18 +24,49 @@ const shortDate = (date) => {
   return new Date(y, m - 1, d).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
 };
 
-const NewsTicker = () => (
-  <div className="news-ticker">
-    <span className="news-ticker-label">News</span>
-    <div className="news-ticker-track">
-      <span>
-        Powerplay Divas win the CAP Women's League 2026 &nbsp;·&nbsp;
-        CAP T20 Fall Tournament starts Aug 29 — book your practice slots &nbsp;·&nbsp;
-        Practice ground bookings are now open for the season &nbsp;·&nbsp;
-      </span>
+const SITE_URL = "https://cricket-peoria.web.app";
+
+const newsDate = (iso) => new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+
+// Published announcements from the main site CMS (same Firestore project, public read).
+function useAnnouncements() {
+  const [items, setItems] = useState([]);
+  useEffect(() => {
+    let active = true;
+    // One minute of slack so a fast client clock can't trip the publishAtMs <= request.time rule
+    const cutoff = Date.now() - 60000;
+    getDocs(query(collection(db, "cap_announcements"), where("status", "==", "published"), where("publishAtMs", "<=", cutoff)))
+      .then((snap) => {
+        if (!active) return;
+        const now = Date.now();
+        const list = snap.docs
+          .map((d) => ({ id: d.id, ...d.data() }))
+          .filter((a) => !a.expiresAt || new Date(a.expiresAt).getTime() > now)
+          .sort((a, b) => Number(b.pinned) - Number(a.pinned) || b.publishAtMs - a.publishAtMs)
+          .slice(0, 3);
+        setItems(list);
+      })
+      .catch(() => { /* News is optional; the booking UI works without it. */ });
+    return () => { active = false; };
+  }, []);
+  return items;
+}
+
+const NewsTicker = ({ items }) => {
+  if (!items.length) return null;
+  return (
+    <div className="news-ticker">
+      <span className="news-ticker-label">News</span>
+      <div className="news-ticker-track">
+        <span>
+          {items.map((a) => (
+            <a key={a.id} href={`${SITE_URL}/announcements/${a.id}`} target="_blank" rel="noopener noreferrer">{a.title}</a>
+          ))}
+        </span>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 function App() {
  const [slots, setSlots] = useState([]);
@@ -58,6 +89,7 @@ const [teams, setTeams] = useState([]);
 const [showTeamManager, setShowTeamManager] = useState(false);
 const [newTeamName, setNewTeamName] = useState("");
 const [newTeamGroup, setNewTeamGroup] = useState(TEAM_GROUPS[0].label);
+const announcements = useAnnouncements();
 
 
 
@@ -587,7 +619,7 @@ const [newTeamGroup, setNewTeamGroup] = useState(TEAM_GROUPS[0].label);
          </div>
        </header>
 
-       <NewsTicker />
+       <NewsTicker items={announcements} />
 
        <div className="login-news-layout">
          <section className="login-card">
@@ -601,17 +633,17 @@ const [newTeamGroup, setNewTeamGroup] = useState(TEAM_GROUPS[0].label);
          </section>
 
          <section className="news-section">
-           <h3 className="news-section-title">Latest news</h3>
-           <article className="news-item">
-             <span className="flag flag-amber">Champions</span>
-             <h4>Powerplay Divas win the CAP Women's League 2026</h4>
-             <p>Congratulations to Powerplay Divas on clinching the CAP Women's League title. A fantastic season from all the teams.</p>
-           </article>
-           <article className="news-item">
-             <span className="flag">Upcoming</span>
-             <h4>CAP T20 Fall Tournament starts Aug 29</h4>
-             <p>The CAP T20 Fall Tournament 2026 kicks off August 29th. Captains, book your practice slots now.</p>
-           </article>
+           <h3 className="news-section-title">Latest from CAP</h3>
+           {announcements.length === 0 ? (
+             <p className="news-empty">Announcements are posted on <a href={SITE_URL} target="_blank" rel="noopener noreferrer">cricket-peoria.web.app</a>.</p>
+           ) : announcements.map((a) => (
+             <article key={a.id} className="news-item">
+               <span className={`flag${a.pinned ? " flag-amber" : ""}`}>{a.category || "Association"} · {newsDate(a.publishAt)}</span>
+               <h4><a href={`${SITE_URL}/announcements/${a.id}`} target="_blank" rel="noopener noreferrer">{a.title}</a></h4>
+               {a.summary && <p>{a.summary}</p>}
+             </article>
+           ))}
+           <a className="news-more" href={`${SITE_URL}/announcements`} target="_blank" rel="noopener noreferrer">All announcements ↗</a>
          </section>
        </div>
      </div>
@@ -759,7 +791,7 @@ const [newTeamGroup, setNewTeamGroup] = useState(TEAM_GROUPS[0].label);
        </div>
      </header>
 
-     <NewsTicker />
+     <NewsTicker items={announcements} />
 
      <div className="tab-bar" role="tablist">
        <button

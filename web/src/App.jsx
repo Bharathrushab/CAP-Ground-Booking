@@ -4,7 +4,7 @@ import { ArrowRight, ArrowUpRight, Menu, X, Search, CalendarDays, MapPin, BookOp
 import { collection, getDocs, limit, orderBy, query, where } from 'firebase/firestore';
 import { useSite } from './lib/store';
 import { db } from './lib/firebase';
-import { displayDate, isPublic, localDate, practiceUrl, resources, safeUrl, registrationOpen } from './lib/content';
+import { displayDate, isPublic, localDate, practiceUrl, resources, safeUrl, registrationOpen, bookingUrl } from './lib/content';
 import { categories, laws, mccHub, preamble } from './data/laws';
 import verifiedLinks from './data/mcc-links.json';
 import Hero from './components/Hero';
@@ -22,6 +22,12 @@ function useSettings() {
   return publicItems(content.settings).find((item) => item.id === 'main') || {};
 }
 
+function useDocumentTitle(title, fallback = 'Cricket Association of Peoria') {
+  useEffect(() => {
+    document.title = title ? `${title} | CAP` : `CAP | ${fallback}`;
+  }, [title, fallback]);
+}
+
 function Layout({ children }) {
   const { preview, notice, setNotice } = useSite();
   const settings = useSettings();
@@ -30,7 +36,9 @@ function Layout({ children }) {
   useEffect(() => {
     setMenuOpen(false);
     if (!location.hash) window.scrollTo({ top: 0 });
-    document.title = `CAP | ${location.pathname === '/' ? 'Cricket Association of Peoria' : location.pathname.split('/')[1].replace(/^./, (letter) => letter.toUpperCase())}`;
+    const [section, slug] = location.pathname.split('/').slice(1);
+    // Detail pages set their own title once the record loads
+    if (!slug) document.title = `CAP | ${!section ? 'Cricket Association of Peoria' : section.replace(/^./, (letter) => letter.toUpperCase())}`;
   }, [location]);
   useEffect(() => {
     if (!notice) return;
@@ -46,7 +54,7 @@ function Layout({ children }) {
         <button className="icon-button mobile-menu" title={menuOpen ? 'Close menu' : 'Open menu'} aria-label={menuOpen ? 'Close menu' : 'Open menu'} aria-expanded={menuOpen} aria-controls="site-nav" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X /> : <Menu />}</button>
         <nav id="site-nav" className={menuOpen ? 'nav open' : 'nav'} aria-label="Main navigation">
           <NavLink to="/leagues">Leagues</NavLink><NavLink to="/tournaments">Tournaments</NavLink><NavLink to="/announcements">News</NavLink><NavLink to="/rules">Rules & laws</NavLink><NavLink to="/about">About CAP</NavLink>
-          <a className="button small" href={safeUrl(settings.practiceBookingUrl) || practiceUrl} target="_blank" rel="noopener noreferrer">Book practice <ArrowUpRight size={16} /></a>
+          <a className="button small" href={bookingUrl(settings.practiceBookingUrl)} target="_blank" rel="noopener noreferrer">Book practice <ArrowUpRight size={16} /></a>
         </nav>
       </div>
     </header>
@@ -76,18 +84,26 @@ function LeagueGrid({ items }) {
 function PracticePanel() {
   const { preview } = useSite();
   const [slots, setSlots] = useState([]);
+  const [reservedOnly, setReservedOnly] = useState(false);
   const [state, setState] = useState(preview ? 'preview' : 'loading');
   useEffect(() => {
     if (!db) return;
     let active = true;
     getDocs(query(collection(db, 'slots'), where('date', '>=', localDate()), orderBy('date'), limit(40))).then((snapshot) => {
       if (!active) return;
-      setSlots(snapshot.docs.map((record) => ({ id: record.id, ...record.data() })).filter((slot) => !slot.reserved && (slot.booked_by_teams || []).length < 2).slice(0, 3));
+      const upcoming = snapshot.docs.map((record) => ({ id: record.id, ...record.data() }));
+      const open = upcoming.filter((slot) => !slot.reserved && (slot.booked_by_teams || []).length < 2);
+      setSlots(open.slice(0, 3));
+      setReservedOnly(upcoming.length > 0 && open.length === 0 && upcoming.every((slot) => slot.reserved));
       setState('ready');
     }).catch(() => { if (active) setState('restricted'); });
     return () => { active = false; };
   }, []);
-  return <section className="practice-band"><div className="wrap practice-grid"><div><span className="eyebrow">Make time for your game</span><h2>Your next innings<br />starts at practice.</h2><p>Grounds and batting cages, all in one place.</p><a className="button" href={practiceUrl} target="_blank" rel="noopener noreferrer">Open practice booking <ArrowUpRight size={17} /></a></div><div className="practice-details"><h3><CalendarDays size={19} /> Ground availability</h3>{state === 'loading' ? <p>Checking available slots...</p> : slots.length ? slots.map((slot) => <a className="slot-row" href={practiceUrl} target="_blank" rel="noopener noreferrer" key={slot.id}><span><strong>{slot.ground}</strong><small>{displayDate(slot.date)} / {slot.time}</small></span><ArrowUpRight size={18} /></a>) : <p>{state === 'preview' ? 'Live availability is shown on the practice booking site.' : state === 'restricted' ? 'Sign in on the practice site to check availability.' : 'No open ground slots found in the upcoming schedule.'}</p>}<span className="muted small-text">Availability is confirmed when your booking completes.</span></div></div></section>;
+  const emptyMessage = state === 'preview' ? 'Live availability is shown on the practice booking site.'
+    : state === 'restricted' ? 'Sign in on the practice site to check availability.'
+    : reservedOnly ? "This week's ground slots are reserved for matches. Next week's slots open Saturday morning."
+    : "No open ground slots this week. Next week's slots open Saturday morning.";
+  return <section className="practice-band"><div className="wrap practice-grid"><div><span className="eyebrow">Make time for your game</span><h2>Your next innings<br />starts at practice.</h2><p>Grounds and batting cages, all in one place.</p><a className="button" href={practiceUrl} target="_blank" rel="noopener noreferrer">Open practice booking <ArrowUpRight size={17} /></a></div><div className="practice-details"><h3><CalendarDays size={19} /> Ground availability</h3>{state === 'loading' ? <p>Checking available slots...</p> : slots.length ? slots.map((slot) => <a className="slot-row" href={practiceUrl} target="_blank" rel="noopener noreferrer" key={slot.id}><span><strong>{slot.ground}</strong><small>{displayDate(slot.date)} / {slot.time}</small></span><ArrowUpRight size={18} /></a>) : <p>{emptyMessage}</p>}<span className="muted small-text">Availability is confirmed when your booking completes.</span></div></div></section>;
 }
 
 function AnnouncementRow({ item, showCategory = false, headingLevel = 3 }) {
@@ -106,7 +122,7 @@ function Home() {
   const announcements = publicItems(content.announcements).sort((first, second) => Number(second.pinned) - Number(first.pinned) || second.publishAt.localeCompare(first.publishAt));
   const leagues = publicItems(content.leagues);
   const tournaments = publicItems(content.tournaments);
-  return <><Hero bookingUrl={safeUrl(settings.practiceBookingUrl) || practiceUrl} />
+  return <><Hero bookingUrl={bookingUrl(settings.practiceBookingUrl)} />
     {announcements[0] && <Link className="news-strip" to={`/announcements/${announcements[0].id}`}><span className="wrap"><strong>FROM THE ASSOCIATION</strong><span>{announcements[0].title}</span><ArrowRight size={19} /></span></Link>}
     <section className="section wrap" aria-labelledby="cricclubs-heading">
       <div className="section-heading"><div><span className="eyebrow">Registration & match centre</span><h2 id="cricclubs-heading">CAP on CricClubs</h2><p>Live scores, matches, leagues and standings.</p></div></div>
@@ -132,10 +148,13 @@ function Detail({ resource }) {
   const { slug } = useParams();
   const { content, preview, pending, errors } = useSite();
   const item = publicItems(content[resource]).find((record) => record.id === slug);
+  useDocumentTitle(item?.title, resources[resource].label);
   if (pending.includes(resource) || errors[resource]) return <div className="wrap section"><ResourceState resource={resource} /></div>;
   if (!item) return <NotFound />;
   const isRules = resource === 'rules';
-  return <div className="wrap section"><Link className="back-link" to={`/${resource}`}><ChevronLeft size={16} /> {resources[resource].label}</Link><div className="page-heading"><span className="eyebrow">{item.season || 'CAP'} / {isRules ? 'Playing conditions' : statusLabels[item.stage] || 'Association'}</span><h1>{item.title}</h1><p>{item.summary}</p></div>
+  const isNews = resource === 'announcements';
+  const eyebrow = isNews ? `${item.category || 'Association'} / ${displayDate(item.publishAt)}` : `${item.season || 'CAP'} / ${isRules ? 'Playing conditions' : statusLabels[item.stage] || 'Association'}`;
+  return <div className="wrap section"><Link className="back-link" to={`/${resource}`}><ChevronLeft size={16} /> {resources[resource].label}</Link><div className="page-heading"><span className="eyebrow">{eyebrow}</span><h1>{item.title}</h1><p>{item.summary}</p></div>
     {resource === 'announcements' && item.imageUrl && <img className="article-cover" src={item.imageUrl} alt={item.imageAlt || ''} />}
     {isRules && <><div className="document-toolbar"><span>Revision {item.revision || 1}{item.updatedAt ? ` / ${displayDate(item.updatedAt)}` : ''}</span><button className="button small outline" onClick={() => window.print()}><Printer size={16} /> Print / PDF</button></div>{preview && <p className="alert">Reference import. Confirm the adopted edition, dates and competition conditions with CAP.</p>}<p className="rule-hierarchy">MCC Laws provide the foundation. CAP competition conditions may vary it; ICC conditions apply only where expressly adopted. <Link to="/laws">MCC reference <ArrowUpRight size={14} /></Link></p></>}
     {!isRules && resource !== 'announcements' && <div className="event-facts"><span><CalendarDays size={19} />{displayDate(item.startDate)}{item.endDate && ` - ${displayDate(item.endDate)}`}</span>{item.venues && <span><MapPin size={19} />{item.venues}</span>}{item.feeText && <span>{item.feeText}</span>}{registrationOpen(item) && <a className="button" href={safeUrl(item.registrationUrl)} target="_blank" rel="noopener noreferrer">Register <ArrowUpRight size={17} /></a>}</div>}
@@ -163,6 +182,7 @@ function MccResources() {
 function LawDetail() {
   const { number } = useParams();
   const law = number === 'preamble' ? preamble : laws.find((item) => String(item.number) === number);
+  useDocumentTitle(law ? (law.number ? `Law ${law.number}: ${law.title}` : law.title) : '', 'Laws');
   if (!law) return <NotFound />;
   return <div className="wrap section law-detail"><Link className="back-link" to="/laws"><ChevronLeft size={16} /> All Laws</Link><div className="page-heading"><span className="eyebrow">{law.number ? `Law ${law.number} / ${law.category}` : 'Preamble'}</span><h1>{law.title}</h1></div><div className="law-summary"><h2>In plain English</h2><p>{law.summary}</p><a className="button" href={verifiedLinks.links[law.number] || law.officialUrl} target="_blank" rel="noopener noreferrer">Read the official {law.number ? 'Law' : 'Preamble'} <ArrowUpRight size={17} /></a><h2>At CAP</h2><p>Use the playing conditions for your specific league. Where the adopted Law and local conditions need interpretation, consult the match umpires and CAP committee.</p><Link className="text-link" to="/rules">CAP league rulebooks <ArrowRight size={17} /></Link></div><div className="law-pagination"><Link to={law.number > 1 ? `/laws/${law.number - 1}` : '/laws/preamble'}><ChevronLeft size={17} />{law.number > 1 ? `Law ${law.number - 1}` : 'Preamble'}</Link>{(!law.number || law.number < 42) && <Link to={`/laws/${(law.number || 0) + 1}`}>Law {(law.number || 0) + 1}<ChevronRight size={17} /></Link>}</div><MccResources /></div>;
 }
